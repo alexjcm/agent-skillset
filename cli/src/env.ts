@@ -1,4 +1,6 @@
 import { z } from "zod"
+import { EXIT_CODES } from "./core/exit-codes.ts"
+import { log } from "./ui/logger.ts"
 
 // Validate process.env once at entry point, never inline.
 const EnvSchema = z.object({
@@ -9,8 +11,8 @@ const parsed = EnvSchema.safeParse(process.env)
 
 if (!parsed.success) {
   const messages = parsed.error.issues.map((i) => `  • ${i.message}`).join("\n")
-  console.error(`[skills] Environment validation failed:\n${messages}`)
-  process.exit(1)
+  log.error(`Environment validation failed:\n${messages}`)
+  process.exit(EXIT_CODES.ERROR)
 }
 
 export const env = parsed.data
