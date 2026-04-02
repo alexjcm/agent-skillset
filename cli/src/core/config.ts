@@ -1,18 +1,14 @@
 import path from "path"
-import { fileURLToPath } from "url"
 import { env } from "../env.ts"
+import { readUserConfig } from "./user-config.ts"
 
-// ============================================================================
-// SOURCE
-// ============================================================================
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
-export const SKILL_SOURCE_DIR = path.resolve(__dirname, "..", "..", "..", "skills")
-
-// ============================================================================
-// GLOBAL IDE PATHS
-// All paths built with path.join()
-// ============================================================================
+/**
+ * Returns the user-configured skills folder, or null when not set.
+ * Callers must handle null gracefully — no error is thrown.
+ */
+export function getSkillSourceDir(): string | null {
+  return readUserConfig()?.skillsDir ?? null
+}
 
 export const IDE_GLOBAL_PATHS = {
   intellij:    [path.join(env.HOME, ".codeium", "skills")],
@@ -20,26 +16,20 @@ export const IDE_GLOBAL_PATHS = {
   antigravity: [path.join(env.HOME, ".gemini", "antigravity", "skills")],
   claude:      [path.join(env.HOME, ".claude", "skills")],
   cursor:      [path.join(env.HOME, ".cursor", "skills")],
-  codex:       [path.join(env.HOME, ".codex", "skills")],
+  codex:       [path.join(env.HOME, ".agents", "skills")],
 } as const satisfies Record<string, string[]>
 
-// ============================================================================
-// IDE BASE DIRS (used to detect if an IDE is installed)
-// ============================================================================
-
+// Used to detect if an IDE is installed
 export const IDE_BASE_DIRS = {
   intellij:    path.join(env.HOME, ".codeium"),
   windsurf:    path.join(env.HOME, ".codeium"),
   antigravity: path.join(env.HOME, ".gemini", "antigravity"),
   claude:      path.join(env.HOME, ".claude"),
   cursor:      path.join(env.HOME, ".cursor"),
-  codex:       path.join(env.HOME, ".codex"),
+  codex:       path.join(env.HOME, ".agents"),
 } as const satisfies Record<string, string>
 
-// ============================================================================
-// PROJECT-LEVEL IDE PATHS (relative to project root)
-// ============================================================================
-
+// Project-level IDE paths (relative to project root)
 export const IDE_PROJECT_PATHS = {
   intellij:    [path.join(".windsurf", "skills")],
   windsurf:    [path.join(".windsurf", "skills")],
@@ -49,10 +39,7 @@ export const IDE_PROJECT_PATHS = {
   codex:       [path.join(".agents", "skills")],
 } as const satisfies Record<string, string[]>
 
-// ============================================================================
-// ALL IDEs — "all" is a UI concept, not a type. Expanded here.
-// ============================================================================
-
+// All IDEs — "all" is a UI concept, not a type. Expanded here.
 export const ALL_IDE_KEYS = [
   "intellij",
   "windsurf",

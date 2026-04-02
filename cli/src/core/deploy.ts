@@ -1,6 +1,6 @@
 import path from "path"
 import * as fs from "fs-extra"
-import { IDE_GLOBAL_PATHS, IDE_PROJECT_PATHS, IDE_BASE_DIRS, SKILL_SOURCE_DIR } from "./config.ts"
+import { IDE_GLOBAL_PATHS, IDE_PROJECT_PATHS, IDE_BASE_DIRS } from "./config.ts"
 import { safeRm, safeRmProject } from "./safe-rm.ts"
 import { discoverSkills, isExcluded } from "./skills.ts"
 import type { IdeTarget, Skill, DeployOptions, DeployResult } from "./types.ts"
@@ -130,16 +130,10 @@ export async function deployAllGlobal(
 // ============================================================================
 
 export async function loadSkillByRef(ref: string): Promise<Skill> {
-  const skillPath = path.join(SKILL_SOURCE_DIR, ref)
-  const skillMd = path.join(skillPath, "SKILL.md")
-
-  if (!(await fs.pathExists(skillMd))) {
-    throw new Error(`Skill not found: ${ref} (expected SKILL.md at ${skillMd})`)
+  const allSkills = await discoverSkills()
+  const found = allSkills.find((s) => s.ref === ref)
+  if (!found) {
+    throw new Error(`Skill not found: "${ref}". Check the ref or run Doctor to verify your skills folder.`)
   }
-
-  const parts = ref.split(path.sep)
-  const name = parts[parts.length - 1] ?? ref
-  const category = parts[parts.length - 2] ?? ""
-
-  return { ref, name, category, path: skillPath }
+  return found
 }

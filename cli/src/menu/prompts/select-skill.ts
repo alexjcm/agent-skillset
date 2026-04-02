@@ -1,5 +1,5 @@
 import * as clack from "@clack/prompts"
-import pc from "picocolors"
+import * as pc from "../../ui/ansi.ts"
 import { discoverSkills } from "../../core/skills.ts"
 import type { Skill } from "../../core/types.ts"
 

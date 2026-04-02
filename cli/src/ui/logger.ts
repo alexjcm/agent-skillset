@@ -1,4 +1,4 @@
-import pc from "picocolors"
+import * as pc from "./ansi.ts"
 
 export const isTTY = process.stdout.isTTY
 
@@ -42,7 +42,7 @@ export const log = {
   },
 
   bullet: (msg: string, detail?: string) => {
-    const text = detail ? `${msg} ${pc.dim(detail)}` : msg
+    const text = detail ? `${msg}: ${pc.dim(detail)}` : msg
     console.log(`  ${symbols.bullet} ${text}`)
   },
 

@@ -1,32 +1,41 @@
 import path from "path"
 import fg from "fast-glob"
 import * as fs from "fs-extra"
-import { SKILL_SOURCE_DIR } from "./config.ts"
+import { getSkillSourceDir } from "./config.ts"
+import { IMPORTED_DIR } from "./user-config.ts"
 import type { Skill } from "./types.ts"
 
 // ============================================================================
 // DISCOVER CATEGORIES
-// Dynamic: reads actual subdirectories of SKILL_SOURCE_DIR.
+// Merges categories from both the user's own skillsDir and ~/.skills/imported/.
 // No hardcoded list — adding a folder = new category.
 // ============================================================================
 
 export async function discoverCategories(): Promise<string[]> {
-  try {
-    const entries = await fs.readdir(SKILL_SOURCE_DIR, { withFileTypes: true })
-    return entries
-      .filter((e) => e.isDirectory() && !e.name.startsWith("."))
-      .map((e) => e.name)
-      .sort()
-  } catch (err: any) {
-    if (err.code === "ENOENT") {
-      throw new Error(
-        `The expected skills directory was not found.\n` +
-        `Looking at: ${SKILL_SOURCE_DIR}\n` +
-        `Make sure you are running the CLI from within the valid project structure, and that the 'skills/' folder exists.`
-      )
+  const roots: string[] = []
+  const ownDir = getSkillSourceDir()
+  if (ownDir) roots.push(ownDir)
+  if (await fs.pathExists(IMPORTED_DIR)) roots.push(IMPORTED_DIR)
+
+  const allCategories = new Set<string>()
+  for (const root of roots) {
+    try {
+      const entries = await fs.readdir(root, { withFileTypes: true })
+      entries
+        .filter((e) => e.isDirectory() && !e.name.startsWith("."))
+        .forEach((e) => {
+          // Only treat as a category if it does NOT directly contain SKILL.md
+          // (i.e. it is not itself an uncategorized skill folder)
+          const possibleSkillMd = path.join(root, e.name, "SKILL.md")
+          if (!fs.pathExistsSync(possibleSkillMd)) {
+            allCategories.add(e.name)
+          }
+        })
+    } catch (err: any) {
+      if (err.code !== "ENOENT") throw err
     }
-    throw err
   }
+  return [...allCategories].sort()
 }
 
 // ============================================================================
@@ -61,38 +70,106 @@ async function parseSkillDescription(skillMdPath: string): Promise<string | unde
   } catch (err: any) {
     // Non-fatal — description is optional
     if (err.code !== "ENOENT") {
-      // Non-fatal, just skip description
+      // swallow silently
     }
   }
   return undefined
 }
 
 // ============================================================================
-// DISCOVER SKILLS
+// DISCOVER SKILLS FROM A SINGLE ROOT
+// Detects skills at two structural depths:
+//   {root}/*/SKILL.md          → uncategorized (category = "")
+//   {root}/*/*/SKILL.md        → categorized
+//
+// Ambiguity guard: if a dir at depth 1 contains SKILL.md, it is treated as
+// an uncategorized skill regardless of whether it also has subdirs with SKILL.md.
+// ============================================================================
+
+async function discoverSkillsInRoot(
+  root: string,
+  source: "own" | "imported"
+): Promise<Skill[]> {
+  if (!(await fs.pathExists(root))) return []
+
+  const globRoot = root.replace(/\\/g, "/")
+
+  // Both depths in one glob call
+  const allMdPaths = await fg(
+    [
+      `${globRoot}/*/SKILL.md`,
+      `${globRoot}/*/*/SKILL.md`,
+    ],
+    { onlyFiles: true, dot: false }
+  )
+  allMdPaths.sort()
+
+  const skills: Skill[] = []
+  // Track uncategorized skill dirs to skip their subdirs (ambiguity guard)
+  const uncategorizedDirs = new Set<string>()
+
+  for (const mdPath of allMdPaths) {
+    const skillDir = path.dirname(mdPath)
+    const parentDir = path.dirname(skillDir)
+
+    const isDirectUnderRoot = path.normalize(parentDir) === path.normalize(root)
+
+    if (isDirectUnderRoot) {
+      // Uncategorized (depth 1): root/skill-name/SKILL.md
+      const name = path.basename(skillDir)
+      const ref = name
+      uncategorizedDirs.add(path.normalize(skillDir))
+      const description = await parseSkillDescription(mdPath)
+      skills.push({ ref, name, category: "", path: skillDir, description, source })
+    } else {
+      // Categorized (depth 2): root/category/skill-name/SKILL.md
+      // Skip if the category dir itself was already claimed as an uncategorized skill
+      if (uncategorizedDirs.has(path.normalize(parentDir))) continue
+
+      const name = path.basename(skillDir)
+      const categoryDir = parentDir
+      const category = path.basename(categoryDir)
+      const ref = path.join(category, name)
+      const description = await parseSkillDescription(mdPath)
+      skills.push({ ref, name, category, path: skillDir, description, source })
+    }
+  }
+
+  return skills
+}
+
+// ============================================================================
+// DISCOVER SKILLS — public API
+// Scans up to two roots: user's own skillsDir (if set) + ~/.skills/imported/.
 // ============================================================================
 
 export async function discoverSkills(categories?: string[]): Promise<Skill[]> {
-  const cats = categories ?? (await discoverCategories())
-
-  const patterns = cats.map((cat) =>
-    // path.join + forward-slash for fast-glob (glob always uses /)
-    `${SKILL_SOURCE_DIR.replace(/\\/g, "/")}/${cat}/*/SKILL.md`
-  )
-
-  const skillMdPaths = await fg(patterns, { onlyFiles: true, dot: false })
-  skillMdPaths.sort()
-
   const skills: Skill[] = []
-  for (const mdPath of skillMdPaths) {
-    const skillDir = path.dirname(mdPath)
-    const name = path.basename(skillDir)
-    const categoryDir = path.dirname(skillDir)
-    const category = path.basename(categoryDir)
-    const ref = path.join(category, name)
-    const description = await parseSkillDescription(mdPath)
 
-    skills.push({ ref, name, category, path: skillDir, description })
+  // Root 1: user's own skills
+  const ownDir = getSkillSourceDir()
+  if (ownDir) {
+    const ownSkills = await discoverSkillsInRoot(ownDir, "own")
+    if (categories) {
+      skills.push(...ownSkills.filter((s) => categories.includes(s.category) || categories.includes(s.ref)))
+    } else {
+      skills.push(...ownSkills)
+    }
   }
+
+  // Root 2: imported (always, if dir exists)
+  const importedSkills = await discoverSkillsInRoot(IMPORTED_DIR, "imported")
+  if (categories) {
+    skills.push(...importedSkills.filter((s) => categories.includes(s.category) || categories.includes(s.ref)))
+  } else {
+    skills.push(...importedSkills)
+  }
+
+  // Stable sort: category asc, name asc
+  skills.sort((a, b) => {
+    const catCmp = a.category.localeCompare(b.category)
+    return catCmp !== 0 ? catCmp : a.name.localeCompare(b.name)
+  })
 
   return skills
 }

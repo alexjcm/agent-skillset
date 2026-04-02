@@ -11,8 +11,7 @@
     "dev": "bun --watch run src/index.ts",
     "lint": "bun run --bun tsc --noEmit",
     "test": "vitest run",
-    "test:watch": "vitest",
-    "setup": "bun link"
+    "test:watch": "vitest"
   },
   "keywords": [
     "ai",
@@ -21,11 +20,10 @@
     "cli"
   ],
   "dependencies": {
-    "@clack/prompts": "1.1.0",
+    "@clack/prompts": "1.2.0",
     "commander": "14.0.3",
     "fast-glob": "3.3.3",
     "fs-extra": "11.3.4",
-    "picocolors": "1.1.1",
     "zod": "4.3.6"
   },
   "devDependencies": {

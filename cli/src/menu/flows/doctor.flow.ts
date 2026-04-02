@@ -1,9 +1,10 @@
 import path from "path"
 import { constants as fsConstants } from "fs"
 import * as fs from "fs-extra"
-import pc from "picocolors"
+import * as pc from "../../ui/ansi.ts"
 import { env } from "../../env.ts"
-import { SKILL_SOURCE_DIR, ALL_IDE_KEYS, IDE_BASE_DIRS, IDE_GLOBAL_PATHS, IDE_PROJECT_PATHS } from "../../core/config.ts"
+import { ALL_IDE_KEYS, IDE_BASE_DIRS, IDE_GLOBAL_PATHS, IDE_PROJECT_PATHS, getSkillSourceDir } from "../../core/config.ts"
+import { SKILLS_HOME, IMPORTED_DIR } from "../../core/user-config.ts"
 import { discoverCategories, discoverSkills } from "../../core/skills.ts"
 import type { FlowResult } from "../flow-result.ts"
 import { log } from "../../ui/logger.ts"
@@ -40,18 +41,34 @@ export async function doctorFlow(): Promise<FlowResult> {
   log.step("Doctor: Environment Diagnostics")
 
   log.bullet("HOME", env.HOME)
+  log.bullet("Skills home", `${SKILLS_HOME} ${(await fs.pathExists(SKILLS_HOME)) ? pc.green("(found)") : pc.yellow("(will be created)")}`)
 
-  const skillRootExists = await fs.pathExists(SKILL_SOURCE_DIR)
-  log.bullet("Skills root", `${SKILL_SOURCE_DIR} ${skillRootExists ? pc.green("(found)") : pc.red("(missing)")}`)
+  // --- User's own skillsDir ---
+  const skillsDir = getSkillSourceDir()
+  if (skillsDir) {
+    const skillRootExists = await fs.pathExists(skillsDir)
+    log.bullet("Own skills dir", `${skillsDir} ${skillRootExists ? pc.green("(found)") : pc.red("(missing)")}`)
+  } else {
+    log.bullet("Own skills dir", pc.dim("not configured  (set via Settings → Configure skills folder)"))
+  }
 
-  if (skillRootExists) {
-    try {
-      const categories = await discoverCategories()
-      const skills = await discoverSkills()
-      log.bullet("Catalog", `${categories.length} categories, ${skills.length} skills`)
-    } catch (err) {
-      log.error("Could not scan skills catalog", err)
-    }
+  // --- Imported skills dir ---
+  const importedExists = await fs.pathExists(IMPORTED_DIR)
+  log.bullet("Imported skills", `${IMPORTED_DIR} ${importedExists ? pc.green("(found)") : pc.dim("(empty)")}`)
+
+  // --- Catalog summary ---
+  try {
+    const categories = await discoverCategories()
+    const skills = await discoverSkills()
+    const ownCount = skills.filter((s) => s.source === "own").length
+    const importedCount = skills.filter((s) => s.source === "imported").length
+    log.bullet(
+      "Catalog",
+      `${categories.length} categories, ${skills.length} skills` +
+      (importedCount > 0 ? ` (${ownCount} own, ${importedCount} imported)` : "")
+    )
+  } catch (err) {
+    log.error("Could not scan skills catalog", err)
   }
 
   log.step("Targets:")

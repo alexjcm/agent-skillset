@@ -1,5 +1,5 @@
 import * as clack from "@clack/prompts"
-import pc from "picocolors"
+import * as pc from "../../ui/ansi.ts"
 
 import { ALL_IDE_KEYS } from "../../core/config.ts"
 import { deploySkillGlobal, deployAllGlobal } from "../../core/deploy.ts"

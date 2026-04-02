@@ -13,17 +13,20 @@ export type IdeTarget = z.infer<typeof IdeTargetSchema>
 // ============================================================================
 
 export const SkillSchema = z.object({
-  /** Relative path from SKILL_SOURCE_DIR, e.g. "development/writing-junit-tests" */
+  /** Relative path from its root, e.g. "development/writing-junit-tests" */
   ref: z.string(),
   /** Folder name, e.g. "writing-junit-tests" */
   name: z.string(),
-  /** Category folder name, e.g. "development" */
+  /** Category folder name, e.g. "development". Empty string when uncategorized. */
   category: z.string(),
   /** Absolute path to the skill folder */
   path: z.string(),
   /** First non-empty line of SKILL.md after the frontmatter/title, used as description in menus */
   description: z.string().optional(),
+  /** Whether this skill belongs to the user's own skillsDir or was downloaded via import */
+  source: z.enum(["own", "imported"]).default("own"),
 })
+
 export type Skill = z.infer<typeof SkillSchema>
 
 // ============================================================================

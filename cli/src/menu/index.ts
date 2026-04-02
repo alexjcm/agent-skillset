@@ -1,37 +1,53 @@
 import * as clack from "@clack/prompts"
-import pc from "picocolors"
-import { SKILL_SOURCE_DIR } from "../core/config.ts"
+import * as pc from "../ui/ansi.ts"
+import { getSkillSourceDir } from "../core/config.ts"
+import { loadExcludedRefs } from "../core/skills-config.ts"
 import { deployAllGlobalFlow, deployAllChooseIdeFlow, deploySpecificGlobalFlow } from "./flows/deploy-global.flow.ts"
 import { deployToProjectFlow } from "./flows/deploy-project.flow.ts"
 import { doctorFlow } from "./flows/doctor.flow.ts"
 import { listFlow } from "./flows/list.flow.ts"
+import { configFlow } from "./flows/config.flow.ts"
+import { importSkillFlow } from "./flows/import-skill.flow.ts"
+import { checkUpdatesFlow } from "./flows/check-updates.flow.ts"
 import { EXIT_CODES } from "../core/exit-codes.ts"
-import { loadExcludedRefs } from "../core/skills-config.ts"
 import type { FlowResult } from "./flow-result.ts"
 import { log } from "../ui/logger.ts"
 
 // ============================================================================
 // MAIN MENU
-// isCancel after every prompt
 // ============================================================================
 
 export async function runMenu(): Promise<number> {
   clack.intro(pc.bold(pc.cyan("✦ Skills Manager")))
 
+  // First-run / migration notice is handled inside loadExcludedRefs (skills-config.ts).
+  // After that call, ~/.skills/config.json is guaranteed to exist.
   const excludedRefs = loadExcludedRefs()
+
+  // Informational hint when no own skills folder is configured
+  const skillsDir = getSkillSourceDir()
+  if (!skillsDir) {
+    log.raw(
+      `  ${pc.dim("ℹ")}  ${pc.dim("No own skills folder configured.")}\n` +
+      `     ${pc.dim("Set one via:")} ${pc.dim("Settings → Set / change own skills folder")}`
+    )
+  }
 
   while (true) {
     const action = await clack.select({
       message: "What would you like to do?",
       options: [
-        { value: "deploy-all-global",    label: "Deploy ALL skills",          hint: "→ all IDEs (global)" },
-        { value: "deploy-all-ide",       label: "Deploy ALL skills",          hint: "→ choose IDE (global)" },
-        { value: "deploy-specific",      label: "Deploy specific skill",       hint: "→ global" },
-        { value: "deploy-project",       label: "Deploy to project/workspace directory", hint: "→ multi-select" },
-        { value: "doctor",               label: "Doctor (diagnostics)" },
-        { value: "list",                 label: "List available skills" },
-        { value: "help",                 label: "Help" },
-        { value: "exit",                 label: pc.dim("Exit") },
+        { value: "deploy-all-global",  label: "Deploy ALL skills",                        hint: "→ all IDEs (global)" },
+        { value: "deploy-all-ide",     label: "Deploy ALL skills",                        hint: "→ choose IDE (global)" },
+        { value: "deploy-specific",    label: "Deploy specific skill",                    hint: "→ global" },
+        { value: "deploy-project",     label: "Deploy to project/workspace directory",    hint: "→ multi-select" },
+        { value: "doctor",             label: "Doctor (diagnostics)" },
+        { value: "list",               label: "List available skills" },
+        { value: "settings",           label: "Settings",                                 hint: "→ configure skills folder" },
+        { value: "import-skill",       label: "Import skill from GitHub",                 hint: "→ URL or owner/repo" },
+        { value: "check-updates",      label: "Check & update imported skills",           hint: "→ from registry" },
+        { value: "help",               label: "Help" },
+        { value: "exit",               label: pc.dim("Exit") },
       ],
     })
 
@@ -63,14 +79,26 @@ export async function runMenu(): Promise<number> {
         await listFlow()
         result = "completed"
         break
+      case "settings":
+        result = await configFlow()
+        break
+      case "import-skill":
+        result = await importSkillFlow()
+        break
+      case "check-updates":
+        result = await checkUpdatesFlow()
+        break
       case "help":
         log.raw(`
 ${pc.bold("Interactive Commands:")}
-  ${pc.cyan("Deploy ALL skills")}           Deploy all non-excluded skills to global IDE dirs.
-  ${pc.cyan("Deploy specific skill")}       Deploy a single skill to global IDE dirs.
-  ${pc.cyan("Deploy to project/workspace directory")} Deploy selected skills to a specific project/workspace.
-  ${pc.cyan("Doctor (diagnostics)")}        Validate environment, skills root, and writable target paths.
-  ${pc.cyan("List available skills")}       Show all skills in ${pc.dim(SKILL_SOURCE_DIR)}.
+  ${pc.cyan("Deploy ALL skills")}                  Deploy all non-excluded skills to global IDE dirs.
+  ${pc.cyan("Deploy specific skill")}              Deploy a single skill to global IDE dirs.
+  ${pc.cyan("Deploy to project/workspace")}        Deploy selected skills to a specific project.
+  ${pc.cyan("Doctor (diagnostics)")}               Validate environment, skills folders, and paths.
+  ${pc.cyan("List available skills")}              Show all skills (own + imported).
+  ${pc.cyan("Settings")}                           Configure your personal skills folder.
+  ${pc.cyan("Import skill from GitHub")}           Import skills into ~/.skills/imported/.
+  ${pc.cyan("Check & update imported skills")}     Check registry and update outdated imports.
 
 ${pc.bold("CLI Flags:")}
   ${pc.dim("$ skills --help")}                Show CLI help
