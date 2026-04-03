@@ -7,7 +7,7 @@ import { readUserConfig } from "./user-config.ts"
  * Callers must handle null gracefully — no error is thrown.
  */
 export function getSkillSourceDir(): string | null {
-  return readUserConfig()?.skillsDir ?? null
+  return readUserConfig()?.ownSkillsDir ?? null
 }
 
 export const IDE_GLOBAL_PATHS = {

@@ -7,7 +7,7 @@ import { z } from "zod"
 // CONSTANTS — always fixed, never configurable
 // ============================================================================
 
-export const SKILLS_HOME = path.join(os.homedir(), ".skills")
+export const SKILLS_HOME = path.join(os.homedir(), ".skillctrl")
 export const IMPORTED_DIR = path.join(SKILLS_HOME, "imported")
 
 /** In tests, set SKILLS_CONFIG_PATH to a temp file to avoid touching the real config. */
@@ -20,7 +20,7 @@ function getConfigPath(): string {
 // ============================================================================
 
 const UserConfigSchema = z.object({
-  skillsDir: z.string().optional(),
+  ownSkillsDir: z.string().optional(),
   excludedSkills: z.array(z.string()).default([]),
 })
 
@@ -31,7 +31,7 @@ export type UserConfig = z.infer<typeof UserConfigSchema>
 // ============================================================================
 
 /**
- * Reads ~/.skills/config.json.
+ * Reads ~/.skillctrl/config.json.
  * Returns null if the file does not exist yet (first run).
  * Returns the parsed config (with defaults applied) otherwise.
  */

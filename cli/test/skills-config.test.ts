@@ -10,7 +10,7 @@ async function mkTmp(prefix: string): Promise<string> {
 
 // Each test isolates the global config by pointing SKILLS_CONFIG_PATH to a
 // temp file that does not exist yet. This prevents the dev machine's real
-// ~/.skills/config.json from being read or mutated.
+// ~/.skillctrl/config.json from being read or mutated.
 async function withTmpGlobalConfig<T>(fn: (globalCfgPath: string) => Promise<T>): Promise<T> {
   const tmpDir = await mkTmp("skills-global-cfg-")
   const fakeCfgPath = path.join(tmpDir, "config.json")

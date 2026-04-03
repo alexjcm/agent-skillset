@@ -7,7 +7,7 @@ import type { Skill } from "./types.ts"
 
 // ============================================================================
 // DISCOVER CATEGORIES
-// Merges categories from both the user's own skillsDir and ~/.skills/imported/.
+// Merges categories from both the user's own skillsDir and ~/.skillctrl/imported/.
 // No hardcoded list — adding a folder = new category.
 // ============================================================================
 
@@ -140,7 +140,7 @@ async function discoverSkillsInRoot(
 
 // ============================================================================
 // DISCOVER SKILLS — public API
-// Scans up to two roots: user's own skillsDir (if set) + ~/.skills/imported/.
+// Scans up to two roots: user's own skillsDir (if set) + ~/.skillctrl/imported/.
 // ============================================================================
 
 export async function discoverSkills(categories?: string[]): Promise<Skill[]> {

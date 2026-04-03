@@ -22,7 +22,7 @@ export async function runMenu(): Promise<number> {
   clack.intro(pc.bold(pc.cyan("✦ skillctrl")))
 
   // First-run / migration notice is handled inside loadExcludedRefs (skills-config.ts).
-  // After that call, ~/.skills/config.json is guaranteed to exist.
+  // After that call, ~/.skillctrl/config.json is guaranteed to exist.
   const excludedRefs = loadExcludedRefs()
 
   // Informational hint when no own skills dir is configured

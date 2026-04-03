@@ -16,7 +16,7 @@ function getProjectConfigPath(configPath?: string): string {
 }
 
 // ============================================================================
-// MIGRATION: cli/skills.config.json → ~/.skills/config.json
+// MIGRATION: cli/skills.config.json → ~/.skillctrl/config.json
 // Runs once on first launch when global config does not yet exist but the
 // project-level file does. The project file is not deleted automatically.
 // ============================================================================
@@ -30,7 +30,7 @@ function migrateProjectConfig(projectConfigPath: string): string[] {
 
     saveUserConfig({ excludedSkills })
 
-    log.info("Migrated skills.config.json → ~/.skills/config.json")
+    log.info("Migrated skills.config.json → ~/.skillctrl/config.json")
     log.raw("  You can now delete cli/skills.config.json from your repo.")
 
     return excludedSkills
@@ -44,7 +44,7 @@ function migrateProjectConfig(projectConfigPath: string): string[] {
 // ============================================================================
 // LOAD EXCLUDED REFS
 // Priority:
-//   1. ~/.skills/config.json  (global user config, via readUserConfig())
+//   1. ~/.skillctrl/config.json  (global user config, via readUserConfig())
 //   2. cli/skills.config.json (project fallback → triggers one-time migration)
 //   3. Empty array            (no config anywhere)
 // ============================================================================

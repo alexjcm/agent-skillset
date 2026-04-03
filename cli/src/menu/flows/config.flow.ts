@@ -17,7 +17,7 @@ import { FLOW_BACK, FLOW_CANCELLED, FLOW_COMPLETED } from "../constants/flow-tok
 
 export async function configFlow(): Promise<FlowResult> {
   const cfg = readUserConfig() ?? { excludedSkills: [] }
-  const current = cfg.skillsDir
+  const current = cfg.ownSkillsDir
   const defaultPath = path.join(os.homedir(), "my-skills")
   const setLabel = current ? "Change own skills dir" : "Set own skills dir"
 
@@ -71,7 +71,7 @@ export async function configFlow(): Promise<FlowResult> {
     log.success(`Created ${newPath}`)
   }
 
-  saveUserConfig({ ...cfg, skillsDir: newPath })
+  saveUserConfig({ ...cfg, ownSkillsDir: newPath })
   let ownSkillsCount = 0
   try {
     const allSkills = await discoverSkills()

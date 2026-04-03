@@ -34,13 +34,13 @@ describe("user-config", () => {
   it("saves and reads config", async () => {
     await withTmpConfig(async () => {
       saveUserConfig({
-        skillsDir: "/tmp/my-skills",
+        ownSkillsDir: "/tmp/my-skills",
         excludedSkills: ["tools/example-skill"],
       })
 
       expect(hasUserConfig()).toBe(true)
       expect(readUserConfig()).toEqual({
-        skillsDir: "/tmp/my-skills",
+        ownSkillsDir: "/tmp/my-skills",
         excludedSkills: ["tools/example-skill"],
       })
     })

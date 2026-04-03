@@ -1,6 +1,6 @@
 # 🛠️ skillctrl · Manage and deploy AI skills
 
-Helps you import, update, and deploy AI agent skills, and `skills/` is ideal for skills you create yourself.
+Helps you import, update, and deploy AI agent skills. The skills/ directory is ideal for storing skills you create yourself.
 
 ![Bun](https://img.shields.io/badge/bun-%23000000.svg?style=for-the-badge&logo=bun&logoColor=white)
 ![Node.js](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)
@@ -13,7 +13,7 @@ Helps you import, update, and deploy AI agent skills, and `skills/` is ideal for
 - **Multiple IDE Support**: Deploy skills to IntelliJ (Codeium), Windsurf, Antigravity, Claude Code, Cursor, and Codex.
 - **TUI-Driven Interface**: Interactive terminal wizard for seamless management.
 - **GitHub Import & Update**: Import skills from GitHub URLs or `owner/repo`, then check/update later from registry.
-- **User Config**: Manage your own skills dir via `~/.skills/config.json`.
+- **User Config**: Register your custom skills repository by setting `ownSkillsDir` in `~/.skillctrl/config.json`.
 
 ---
 
@@ -22,7 +22,7 @@ Helps you import, update, and deploy AI agent skills, and `skills/` is ideal for
 This repository is organized to separate your logic from the deployment tool:
 
 - **[`skills/`](skills/)** 🧠: The core storage for all your AI agent skills, organized by category.
-- **[`cli/`](cli/)** ⚡: The source code for the `skillctrl` command-line tool. It manages local config, imports community skills from GitHub into `~/.skills/imported/`, and deploys skills to your IDEs.
+- **[`cli/`](cli/)** ⚡: The source code for the `skillctrl` command-line tool. It manages local config, imports community skills from GitHub into `~/.skillctrl/imported/`, and deploys skills to your IDEs.
 
 ---
 
@@ -41,8 +41,8 @@ To expand your local toolkit:
 The CLI manages and deploys skills to your local environment.
 
 ### Runtime model
-- **Bun**: development only (`dev`, local runs, tests/lint in this repo).
-- **Node.js + npm**: distribution/runtime for the `skillctrl` command.
+- **Bun**: development only — use for local runs, tests, and lint inside this repo.
+- **Node.js + npm**: use for distribution and running `skillctrl` globally. If you just want to use the CLI, skip Bun entirely.
 
 Recommended Node.js version for distribution/runtime: **20+**.
 
@@ -107,26 +107,19 @@ skillctrl --version
 ## 📥 Import & Update from GitHub
 
 From the interactive menu:
-- **Import skill from GitHub**: accepts full GitHub URLs, `github.com/owner/repo`, or `owner/repo`.
-- **Check & update imported skills**: checks imported skills from `~/.skills/skill-imports.json` and lets you:
+- **Import skill from GitHub**: accepts full GitHub URLs (`https://github.com/owner/repo`), short format (`github.com/owner/repo`), or owner/repo shorthand (`owner/repo`).
+- **Check & update imported skills**: checks imported skills from `~/.skillctrl/skill-imports.json` and lets you:
   - select specific skills to update (recommended),
   - update all available,
   - cancel.
 
 Imported skills are stored outside this repo:
-- `~/.skills/imported/{category}/{skill}/`
+- `~/.skillctrl/imported/{category}/{skill}/`
 
-Optional token for higher API limits:
+Optional token for higher GitHub API limits:
 ```bash
 export GITHUB_TOKEN="your_token"
 ```
-
----
-
-## ⚠️ Important Considerations
-
-- **Destructive sync on import/update**: remote source is treated as truth for imported skills. Local edits under `~/.skills/imported/...` can be overwritten.
-- **Rate limits**: unauthenticated GitHub API requests are limited (typically 60 requests/hour). Configure `GITHUB_TOKEN` to reduce interruptions.
 
 ---
 

@@ -5,7 +5,7 @@ import { SKILLS_HOME } from "./user-config.ts"
 export interface ImportEntry {
   source: string
   importedAt: string
-  updatedAt: string
+  updatedAt?: string
   remoteBasePath?: string
 }
 
@@ -46,7 +46,7 @@ function sanitizeRegistry(data: unknown): ImportRegistry {
     const updatedAt = (rawEntry as { updatedAt?: unknown }).updatedAt
     const remoteBasePath = (rawEntry as { remoteBasePath?: unknown }).remoteBasePath
 
-    if (typeof source !== "string" || typeof importedAt !== "string" || typeof updatedAt !== "string") {
+    if (typeof source !== "string" || typeof importedAt !== "string") {
       continue
     }
 
@@ -56,7 +56,7 @@ function sanitizeRegistry(data: unknown): ImportRegistry {
     importedSkills[normalizeRef(rawRef)] = {
       source,
       importedAt,
-      updatedAt,
+      ...(typeof updatedAt === "string" ? { updatedAt } : {}),
       ...(normalizedRemoteBasePath
         ? { remoteBasePath: normalizedRemoteBasePath }
         : {}),
@@ -100,7 +100,7 @@ export function saveEntry(ref: string, sourceUrl: string, options?: { remoteBase
   registry.importedSkills[key] = {
     source: sourceUrl,
     importedAt: existing?.importedAt ?? now,
-    updatedAt: now,
+    ...(existing ? { updatedAt: now } : {}),
     ...(remoteBasePath
       ? {
           remoteBasePath,
