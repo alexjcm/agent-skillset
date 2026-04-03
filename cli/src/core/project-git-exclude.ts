@@ -1,5 +1,5 @@
 import path from "path"
-import * as fs from "fs-extra"
+import fs from "fs-extra"
 import { IDE_PROJECT_PATHS } from "./config.ts"
 import type { IdeTarget } from "./types.ts"
 

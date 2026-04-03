@@ -4,6 +4,8 @@ Helps you import, update, and deploy AI agent skills, and `skills/` is ideal for
 
 ![Bun](https://img.shields.io/badge/bun-%23000000.svg?style=for-the-badge&logo=bun&logoColor=white)
 ![Node.js](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)
+![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
 ---
 
@@ -125,7 +127,6 @@ export GITHUB_TOKEN="your_token"
 
 - **Destructive sync on import/update**: remote source is treated as truth for imported skills. Local edits under `~/.skills/imported/...` can be overwritten.
 - **Rate limits**: unauthenticated GitHub API requests are limited (typically 60 requests/hour). Configure `GITHUB_TOKEN` to reduce interruptions.
-- **Local repository safety**: import/update operations write to `~/.skills/imported/` and do not modify the `skills/` directory in this repo.
 
 ---
 
@@ -141,39 +142,6 @@ export GITHUB_TOKEN="your_token"
 | **Cursor** | `~/.cursor/skills/` | `.cursor/skills/` + `.agents/skills/` |
 | **Codex** | `~/.agents/skills/` | `.agents/skills/` |
 | **OpenCode** | `~/.config/opencode/skills/` + `~/.claude/skills/` + `~/.agents/skills/` | `.opencode/skills/` + `.claude/skills/` + `.agents/skills/` |
-
----
-
-## 💎 Core Skills (Own)
-
-- 🧪 **[writing-junit-tests](skills/development/writing-junit-tests/SKILL.md)**: Generate, structure, and refine JUnit 4 tests for Java 8 applications.
-- 📝 **[documenting-java-code](skills/development/documenting-java-code/SKILL.md)**: Generates standard JavaDocs and adds explanatory comments.
-- 🐚 **[safe-bash-scripting](skills/tools/safe-bash-scripting/SKILL.md)**: Standards and best practices for portable and safe Bash scripts.
-- 🏗️ **[cli-tui-builder](skills/tools/cli-tui-builder/SKILL.md)**: Best practices and library guidance for building CLI and TUI applications.
-- 🔎 **[xsl-to-sql-detail](skills/tools/xsl-to-sql-detail/SKILL.md)**: Embeds XSL content into SQL inserts for DB2.
-
----
-
-## 🌍 Community & Curated Skills (External)
-
-### 🧡 From [OpenAI](https://github.com/openai/skills)
-- 🎨 **[frontend-skill](skills/development/frontend-skill/SKILL.md)**: Enforce restrained composition and image-led hierarchy for web interfaces.
-- 🛡️ **[security-best-practices](skills/development/security-best-practices/SKILL.md)**: Language-specific security reviews and suggestions.
-- 🕵️ **[security-threat-model](skills/architecture/security-threat-model/SKILL.md)**: Repository-grounded threat modeling and abuse path analysis.
-
-### 👥 From [Tech Leads Club](https://github.com/tech-leads-club/agent-skills)
-- 📏 **[coding-guidelines](skills/development/coding-guidelines/SKILL.md)**: Behavioral guidelines to reduce LLM coding mistakes.
-- 📋 **[tlc-spec-driven](skills/development/tlc-spec-driven/SKILL.md)**: Planning phases: Specify, Design, Tasks, and Implement.
-- 📊 **[component-identification-sizing](skills/architecture/component-identification-sizing/SKILL.md)**: Architectural identification and size metrics.
-- 🧬 **[component-common-domain-detection](skills/architecture/component-common-domain-detection/SKILL.md)**: Identifies duplicate domain functionality.
-- 🧹 **[component-flattening-analysis](skills/architecture/component-flattening-analysis/SKILL.md)**: Fixes component hierarchy and root namespace issues.
-- 📍 **[domain-analysis](skills/architecture/domain-analysis/SKILL.md)**: DDD Strategic Design and bounded contexts.
-- 🧩 **[domain-identification-grouping](skills/architecture/domain-identification-grouping/SKILL.md)**: Groups components into logical domains.
-
-### 💡 From [Anthropic](https://github.com/anthropics/skills/tree/main/skills)
-- 🔌 **[mcp-builder](skills/tools/mcp-builder/SKILL.md)**: Create and iterate on Model Context Protocol (MCP) servers.
-- 🛠️ **[skill-creator](skills/tools/skill-creator/SKILL.md)**: Design and build new skills for AI agents.
-
 
 ---
 

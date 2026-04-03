@@ -1,7 +1,7 @@
 import path from "path"
 import os from "os"
 import * as clack from "@clack/prompts"
-import * as fs from "fs-extra"
+import fs from "fs-extra"
 import * as pc from "../../ui/ansi.ts"
 import { readUserConfig, saveUserConfig, SKILLS_HOME } from "../../core/user-config.ts"
 import { discoverSkills } from "../../core/skills.ts"

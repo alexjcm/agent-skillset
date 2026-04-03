@@ -1,6 +1,6 @@
 import path from "path"
 import fg from "fast-glob"
-import * as fs from "fs-extra"
+import fs from "fs-extra"
 import { getSkillSourceDir } from "./config.ts"
 import { IMPORTED_DIR } from "./user-config.ts"
 import type { Skill } from "./types.ts"

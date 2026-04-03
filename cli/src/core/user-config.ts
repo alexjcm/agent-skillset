@@ -1,6 +1,6 @@
 import path from "path"
 import os from "os"
-import * as fs from "fs-extra"
+import fs from "fs-extra"
 import { z } from "zod"
 
 // ============================================================================

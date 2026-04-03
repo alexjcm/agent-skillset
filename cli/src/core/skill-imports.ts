@@ -1,5 +1,5 @@
 import path from "path"
-import * as fs from "fs-extra"
+import fs from "fs-extra"
 import { SKILLS_HOME } from "./user-config.ts"
 
 export interface ImportEntry {

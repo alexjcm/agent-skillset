@@ -2,7 +2,7 @@ import path from "path"
 import * as clack from "@clack/prompts"
 import * as pc from "../../ui/ansi.ts"
 
-import * as fs from "fs-extra"
+import fs from "fs-extra"
 import { ALL_IDE_KEYS } from "../../core/config.ts"
 import { deploySkillToProject } from "../../core/deploy.ts"
 import type { IdeTarget, DeployResult, Skill } from "../../core/types.ts"

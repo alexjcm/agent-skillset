@@ -1,5 +1,5 @@
 import path from "path"
-import * as fs from "fs-extra"
+import fs from "fs-extra"
 import type { SkillCandidate, SkillCandidatePreview } from "./github-fetcher.ts"
 import { assertSafePathSegment, resolvePathInside } from "./path-safety.ts"
 import { IMPORTED_DIR } from "./user-config.ts"

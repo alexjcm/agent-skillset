@@ -1,5 +1,5 @@
 import path from "path"
-import * as fs from "fs-extra"
+import fs from "fs-extra"
 import { IDE_GLOBAL_PATHS, IDE_PROJECT_PATHS, IDE_BASE_DIRS } from "./config.ts"
 import { safeRm, safeRmProject } from "./safe-rm.ts"
 import { discoverSkills, isExcluded } from "./skills.ts"

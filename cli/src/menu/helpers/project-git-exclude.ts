@@ -1,6 +1,6 @@
 import path from "path"
 import * as clack from "@clack/prompts"
-import * as fs from "fs-extra"
+import fs from "fs-extra"
 import {
   appendGitExcludeRules,
   computeMissingGitExcludeRules,

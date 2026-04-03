@@ -1,6 +1,6 @@
 import path from "path"
 import fg from "fast-glob"
-import * as fs from "fs-extra"
+import fs from "fs-extra"
 import type { SkillCandidate, SkillCandidatePreview } from "./github-fetcher.ts"
 import { fetchSkillCandidatePreviewsFromInput, hydrateSkillCandidate } from "./github-fetcher.ts"
 import { assertSafePathSegment, resolvePathInside } from "./path-safety.ts"

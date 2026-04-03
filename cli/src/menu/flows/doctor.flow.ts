@@ -1,6 +1,6 @@
 import path from "path"
 import { constants as fsConstants } from "fs"
-import * as fs from "fs-extra"
+import fs from "fs-extra"
 import * as pc from "../../ui/ansi.ts"
 import { env } from "../../env.ts"
 import { ALL_IDE_KEYS, IDE_BASE_DIRS, IDE_GLOBAL_PATHS, IDE_PROJECT_PATHS, getSkillSourceDir } from "../../core/config.ts"
