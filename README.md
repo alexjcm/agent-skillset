@@ -1,6 +1,6 @@
 # 🛠️ skillctrl · Manage and deploy AI skills
 
-Helps you import, update, and deploy AI agent skills. Store your own skills in any local folder/repo and point `ownSkillsDir` to it.
+Helps you import, update, and deploy AI agent skills.
 
 ![Bun](https://img.shields.io/badge/bun-%23000000.svg?style=for-the-badge&logo=bun&logoColor=white)
 ![Node.js](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)
@@ -14,17 +14,6 @@ Helps you import, update, and deploy AI agent skills. Store your own skills in a
 - **TUI-Driven Interface**: Interactive terminal wizard for seamless management.
 - **GitHub Import & Update**: Import skills from GitHub URLs or `owner/repo`, then check/update later from registry.
 - **User Config**: Register your custom skills repository by setting `ownSkillsDir` in `~/.skillctrl/config.json`.
-
----
-
-## 📂 Project Structure
-
-This repository contains the `skillctrl` CLI package:
-
-- **[`src/`](src/)** ⚡: CLI source code (`skillctrl` command).
-- **[`test/`](test/)** 🧪: automated tests.
-
-Your own skills can live in a separate repository (for example: `/Users/ajcm/my/agent-skills/skills`).
 
 ---
 
@@ -155,6 +144,4 @@ export GITHUB_TOKEN="your_token"
 - Skill authoring best practices: https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices.md
 - Validate skills tool: https://github.com/agentskills/agentskills/tree/main/skills-ref
 - Skill creator: https://github.com/anthropics/skills/blob/main/skills/skill-creator/SKILL.md
-- More sample skills: https://github.com/tech-leads-club/agent-skills/tree/main
 - Agent skills tool: https://github.com/vercel-labs/skills
-- Collection of agent skills: https://github.com/vercel-labs/agent-skills/tree/main
