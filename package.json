@@ -7,8 +7,7 @@
   "homepage": "https://github.com/alexjcm/skillctrl#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/alexjcm/skillctrl.git",
-    "directory": "cli"
+    "url": "git+https://github.com/alexjcm/skillctrl.git"
   },
   "bugs": {
     "url": "https://github.com/alexjcm/skillctrl/issues"
@@ -35,8 +34,6 @@
     "lint": "bun run --bun tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "prepack": "cp ../README.md .",
-    "postpack": "rm -f README.md",
     "prepublishOnly": "npm run lint && npm test && npm run build"
   },
   "keywords": [

@@ -1,6 +1,6 @@
 # 🛠️ skillctrl · Manage and deploy AI skills
 
-Helps you import, update, and deploy AI agent skills. The skills/ directory is ideal for storing skills you create yourself.
+Helps you import, update, and deploy AI agent skills. Store your own skills in any local folder/repo and point `ownSkillsDir` to it.
 
 ![Bun](https://img.shields.io/badge/bun-%23000000.svg?style=for-the-badge&logo=bun&logoColor=white)
 ![Node.js](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)
@@ -19,20 +19,23 @@ Helps you import, update, and deploy AI agent skills. The skills/ directory is i
 
 ## 📂 Project Structure
 
-This repository is organized to separate your logic from the deployment tool:
+This repository contains the `skillctrl` CLI package:
 
-- **[`skills/`](skills/)** 🧠: The core storage for all your AI agent skills, organized by category.
-- **[`cli/`](cli/)** ⚡: The source code for the `skillctrl` command-line tool. It manages local config, imports community skills from GitHub into `~/.skillctrl/imported/`, and deploys skills to your IDEs.
+- **[`src/`](src/)** ⚡: CLI source code (`skillctrl` command).
+- **[`test/`](test/)** 🧪: automated tests.
+
+Your own skills can live in a separate repository (for example: `/Users/ajcm/my/agent-skills/skills`).
 
 ---
 
 ## 🎨 How to Add Your Own Skills
 
 To expand your local toolkit:
-1.  Navigate to `skills/` and pick a category (or create a new one).
-2.  Create a folder (e.g., `skills/development/my-new-skill/`).
+1.  In your own skills repository/folder, pick a category (or create one).
+2.  Create a folder (e.g., `.../skills/development/my-new-skill/`).
 3.  Add a `SKILL.md` with standard YAML frontmatter (name and description).
-4.  Run `skillctrl` to verify and deploy.
+4.  Set that folder in `skillctrl` via **Own Skills Dir** (saved in `~/.skillctrl/config.json`).
+5.  Run `skillctrl` to verify and deploy.
 
 ---
 
@@ -46,9 +49,9 @@ The CLI manages and deploys skills to your local environment.
 
 Recommended Node.js version for distribution/runtime: **20+**.
 
-### 1. Go to CLI directory
+### 1. Go to project root
 ```bash
-cd cli
+cd skillctrl
 ```
 
 ### 2. Install & Link
@@ -89,7 +92,6 @@ The easiest way to manage your skills is via the guided wizard:
 skillctrl
 
 # Or local development run
-cd cli
 bun start
 ```
 
@@ -100,6 +102,15 @@ This TUI handles IDE targeting, project/workspace path resolution, and automatic
 ```bash
 skillctrl --help
 skillctrl --version
+```
+
+### 🔁 If you moved your local skills folder
+
+If your own skills were moved to another path/repository, update `ownSkillsDir`:
+
+```bash
+skillctrl
+# then go to: Own Skills Dir
 ```
 
 ---
@@ -127,7 +138,7 @@ export GITHUB_TOKEN="your_token"
 
 | IDE | Global Path | Project/Workspace Path |
 |-----|-------------|-------------------------|
-| **Antigravity** | `~/.gemini/antigravity/skills/` | `.agent/skills/` |
+| **Antigravity** | `~/.gemini/antigravity/skills/` | `.agents/skills/` |
 | **Windsurf** | `~/.codeium/windsurf/skills/` | `.windsurf/skills/` |
 | **IntelliJ (Codeium)** | `~/.codeium/skills/` | `.windsurf/skills/` |
 | **Junie (JetBrains)** | `~/.junie/skills/` | `.junie/skills/` |

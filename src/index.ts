@@ -1,11 +1,25 @@
 #!/usr/bin/env node
 
 import { Command } from "commander"
+import fs from "fs"
 import { EXIT_CODES } from "./core/exit-codes.ts"
 import { log } from "./ui/logger.ts"
 import "./env.ts"
 
 const program = new Command()
+
+function resolveCliVersion(): string {
+  try {
+    const packageJsonPath = new URL("../package.json", import.meta.url)
+    const raw = fs.readFileSync(packageJsonPath, "utf8")
+    const parsed = JSON.parse(raw) as { version?: unknown }
+    return typeof parsed.version === "string" && parsed.version.trim()
+      ? parsed.version
+      : "0.0.0"
+  } catch {
+    return "0.0.0"
+  }
+}
 
 // Ensure cursor is always restored when the process exits
 process.on("exit", () => {
@@ -18,7 +32,7 @@ process.on("exit", () => {
 program
   .name("skillctrl")
   .description("Manage and deploy AI agent skills")
-  .version("1.0.0")
+  .version(resolveCliVersion())
   .showHelpAfterError("(run with --help for usage)")
   .addHelpText(
     "after",

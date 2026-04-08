@@ -39,7 +39,7 @@ export const IDE_PROJECT_PATHS = {
   intellij:    [path.join(".windsurf", "skills")],
   windsurf:    [path.join(".windsurf", "skills")],
   junie:       [path.join(".junie", "skills")],
-  antigravity: [path.join(".agent", "skills")],
+  antigravity: [path.join(".agents", "skills")],
   claude:      [path.join(".claude", "skills")],
   cursor:      [path.join(".cursor", "skills"), path.join(".agents", "skills")],
   codex:       [path.join(".agents", "skills")],
