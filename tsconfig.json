@@ -3,7 +3,7 @@
     // Environment setup & latest features
     "target": "ES2022",
     "module": "ESNext",
-    "lib": ["ES2022"],
+    "lib": ["ES2024", "ESNext.Array", "ESNext.Collection", "ESNext.Iterator"],
     "exactOptionalPropertyTypes": true,
     "resolveJsonModule": true,
 

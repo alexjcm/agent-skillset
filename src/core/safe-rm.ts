@@ -1,6 +1,8 @@
 import path from "path"
 import os from "os"
-import fs from "fs-extra"
+import { lstat, realpath, rm } from "node:fs/promises"
+import { exists } from "./fs-utils.ts"
+import { IMPORTED_DIR } from "./user-config.ts"
 
 // ============================================================================
 // SAFE RM — global IDE paths
@@ -13,12 +15,12 @@ export async function safeRm(
   allowedPrefixes: readonly string[]
 ): Promise<void> {
   if (!targetPath) throw new Error("safeRm: empty path")
-  if (!(await fs.pathExists(targetPath))) return // nothing to do
-  if ((await fs.lstat(targetPath)).isSymbolicLink()) {
+  if (!(await exists(targetPath))) return // nothing to do
+  if ((await lstat(targetPath)).isSymbolicLink()) {
     throw new Error(`safeRm: refusing to remove symlink: ${targetPath}`)
   }
 
-  const real = await fs.realpath(targetPath)
+  const real = await realpath(targetPath)
 
   const homeDir = os.homedir()
   if (real === "/" || real === homeDir) {
@@ -32,7 +34,7 @@ export async function safeRm(
     throw new Error(`safeRm: path outside safe prefix: ${real}`)
   }
 
-  await fs.remove(real)
+  await rm(real, { recursive: true, force: true })
 }
 
 // ============================================================================
@@ -47,13 +49,13 @@ export async function safeRmProject(
   projectDir: string
 ): Promise<void> {
   if (!targetPath) throw new Error("safeRmProject: empty path")
-  if (!(await fs.pathExists(targetPath))) return // nothing to do
-  if ((await fs.lstat(targetPath)).isSymbolicLink()) {
+  if (!(await exists(targetPath))) return // nothing to do
+  if ((await lstat(targetPath)).isSymbolicLink()) {
     throw new Error(`safeRmProject: refusing to remove symlink: ${targetPath}`)
   }
 
-  const realTarget = await fs.realpath(targetPath)
-  const realProject = await fs.realpath(projectDir)
+  const realTarget = await realpath(targetPath)
+  const realProject = await realpath(projectDir)
 
   const homeDir = os.homedir()
   if (realTarget === "/" || realTarget === homeDir) {
@@ -71,5 +73,32 @@ export async function safeRmProject(
     throw new Error(`safeRmProject: path doesn't contain /skills/: ${realTarget}`)
   }
 
-  await fs.remove(realTarget)
+  await rm(realTarget, { recursive: true, force: true })
+}
+
+// ============================================================================
+// SAFE RM IMPORTED — imported skills cache (~/.skillctrl/imported)
+// Must be inside IMPORTED_DIR and must not be a symlink.
+// ============================================================================
+
+export async function safeRmImported(targetPath: string): Promise<void> {
+  if (!targetPath) throw new Error("safeRmImported: empty path")
+  if (!(await exists(targetPath))) return
+  if ((await lstat(targetPath)).isSymbolicLink()) {
+    throw new Error(`safeRmImported: refusing to remove symlink: ${targetPath}`)
+  }
+
+  const realTarget = await realpath(targetPath)
+  const importedRootReal = await realpath(IMPORTED_DIR).catch(() => path.resolve(IMPORTED_DIR))
+  const homeDir = os.homedir()
+
+  if (realTarget === "/" || realTarget === homeDir || realTarget === importedRootReal) {
+    throw new Error(`safeRmImported: dangerous path: ${realTarget}`)
+  }
+
+  if (!realTarget.startsWith(importedRootReal + path.sep)) {
+    throw new Error(`safeRmImported: path outside imported root: ${realTarget}`)
+  }
+
+  await rm(realTarget, { recursive: true, force: true })
 }

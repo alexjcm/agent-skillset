@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-04-11
+### Added
+- Added TUI flow `Delete imported skill(s)` with multi-select, delete-all option, preview, and destructive confirmation.
+- Added TUI flow `Delete globally installed skill(s)` with IDE selection, known-skill selection/delete-all mode, collision-aware preview, and destructive confirmation.
+- Added dedicated safety tests for imported-root deletion guards.
+### Changed
+- Bumped minimum Node.js requirement from 20 to 22 (LTS Active).
+- Migrated all file system operations from `fs-extra` to native `node:fs/promises`.
+- Improved deletion-flow UX so `Back` from multiselect steps returns to the immediate previous step instead of exiting the flow.
+- Added red visual cues in deletion confirmation prompts to emphasize destructive actions.
+
+### Removed
+- Removed `fs-extra` and `@types/fs-extra` dependencies.
+
 ## [1.2.0] - 2026-04-08
 ### Changed
 - Moved the CLI package layout from `cli/` to the repository root.

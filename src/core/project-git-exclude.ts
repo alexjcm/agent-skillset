@@ -1,5 +1,7 @@
 import path from "path"
-import fs from "fs-extra"
+import { lstat } from "node:fs/promises"
+import { readFileSync } from "node:fs"
+import { exists } from "./fs-utils.ts"
 import { IDE_PROJECT_PATHS } from "./config.ts"
 import type { IdeTarget } from "./types.ts"
 
@@ -73,7 +75,7 @@ export function appendGitExcludeRules(existingContent: string, rulesToAppend: re
 
 function resolveFromGitFile(projectDir: string, gitFilePath: string): string | null {
   try {
-    const content = fs.readFileSync(gitFilePath, "utf8")
+    const content = readFileSync(gitFilePath, "utf8")
     const firstLine = content.split(/\r?\n/)[0]?.trim() ?? ""
     const match = /^gitdir:\s*(.+)$/i.exec(firstLine)
     const gitDirRef = match?.[1]?.trim()
@@ -91,11 +93,11 @@ function resolveFromGitFile(projectDir: string, gitFilePath: string): string | n
 
 export async function resolveProjectGitExcludePath(projectDir: string): Promise<string | null> {
   const gitPath = path.join(projectDir, ".git")
-  if (!(await fs.pathExists(gitPath))) {
+  if (!(await exists(gitPath))) {
     return null
   }
 
-  const stat = await fs.lstat(gitPath)
+  const stat = await lstat(gitPath)
   if (stat.isDirectory()) {
     return path.join(gitPath, "info", "exclude")
   }

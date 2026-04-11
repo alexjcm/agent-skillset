@@ -1,43 +1,38 @@
-import { z } from "zod"
 import { ALL_IDE_KEYS } from "./config.ts"
 
 // ============================================================================
 // IDE TARGET — only real IDE names, never "all" (CLI plan design decision)
 // ============================================================================
 
-export const IdeTargetSchema = z.enum(ALL_IDE_KEYS)
-export type IdeTarget = z.infer<typeof IdeTargetSchema>
+export type IdeTarget = typeof ALL_IDE_KEYS[number]
 
 // ============================================================================
 // SKILL
 // ============================================================================
 
-export const SkillSchema = z.object({
+export interface Skill {
   /** Relative path from its root, e.g. "development/writing-junit-tests" */
-  ref: z.string(),
+  ref: string
   /** Folder name, e.g. "writing-junit-tests" */
-  name: z.string(),
+  name: string
   /** Category folder name, e.g. "development". Empty string when uncategorized. */
-  category: z.string(),
+  category: string
   /** Absolute path to the skill folder */
-  path: z.string(),
+  path: string
   /** First non-empty line of SKILL.md after the frontmatter/title, used as description in menus */
-  description: z.string().optional(),
+  description?: string
   /** Whether this skill belongs to the user's own skillsDir or was downloaded via import */
-  source: z.enum(["own", "imported"]).default("own"),
-})
-
-export type Skill = z.infer<typeof SkillSchema>
+  source: "own" | "imported"
+}
 
 // ============================================================================
 // DEPLOY OPTIONS
 // ============================================================================
 
-export const DeployOptionsSchema = z.object({
+export interface DeployOptions {
   /** Skill refs to skip (loaded from skills.config.json) */
-  excludedRefs: z.array(z.string()).default([]),
-})
-export type DeployOptions = z.infer<typeof DeployOptionsSchema>
+  excludedRefs: string[]
+}
 
 // ============================================================================
 // DEPLOY RESULT (returned by core functions, UI decides how to display)
@@ -60,7 +55,6 @@ export interface DeployResult {
 // SKILLS CONFIG (skills.config.json shape)
 // ============================================================================
 
-export const SkillsConfigSchema = z.object({
-  excludedSkills: z.array(z.string()).default([]),
-})
-export type SkillsConfig = z.infer<typeof SkillsConfigSchema>
+export interface SkillsConfig {
+  excludedSkills: string[]
+}

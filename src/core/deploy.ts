@@ -1,6 +1,7 @@
 import path from "path"
-import fs from "fs-extra"
+import { cp, mkdir } from "node:fs/promises"
 import { IDE_GLOBAL_PATHS, IDE_PROJECT_PATHS, IDE_BASE_DIRS } from "./config.ts"
+import { exists } from "./fs-utils.ts"
 import { safeRm, safeRmProject } from "./safe-rm.ts"
 import { discoverSkills, isExcluded } from "./skills.ts"
 import type { IdeTarget, Skill, DeployOptions, DeployResult } from "./types.ts"
@@ -24,9 +25,9 @@ async function copySkillTo(
 
 
   try {
-    await fs.ensureDir(targetDir)
+    await mkdir(targetDir, { recursive: true })
     await remover(skillDest)
-    await fs.copy(skill.path, skillDest, { overwrite: true })
+    await cp(skill.path, skillDest, { recursive: true, force: true })
     return { skill, ide, targetPath: skillDest, status: "copied" }
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err)
@@ -49,7 +50,7 @@ export async function deploySkillGlobal(
     const targetDirs = IDE_GLOBAL_PATHS[ide]
     const baseDir = IDE_BASE_DIRS[ide]
 
-    if (!(await fs.pathExists(baseDir))) {
+    if (!(await exists(baseDir))) {
       // IDE not installed — skip silently (result captured as "skipped")
       for (const targetDir of targetDirs) {
         results.push({ skill, ide, targetPath: targetDir, status: "skipped", reason: "IDE not installed" })

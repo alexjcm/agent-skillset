@@ -1,5 +1,5 @@
 import path from "path"
-import fs from "fs-extra"
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs"
 import { SKILLS_HOME } from "./user-config.ts"
 
 export interface ImportEntry {
@@ -67,13 +67,13 @@ function sanitizeRegistry(data: unknown): ImportRegistry {
 }
 
 function writeRegistry(registry: ImportRegistry): void {
-  fs.ensureDirSync(SKILLS_HOME)
-  fs.writeFileSync(REGISTRY_PATH, JSON.stringify(registry, null, 2) + "\n", "utf8")
+  mkdirSync(SKILLS_HOME, { recursive: true })
+  writeFileSync(REGISTRY_PATH, JSON.stringify(registry, null, 2) + "\n", "utf8")
 }
 
 export function readRegistry(): ImportRegistry {
   try {
-    const raw = fs.readFileSync(REGISTRY_PATH, "utf8")
+    const raw = readFileSync(REGISTRY_PATH, "utf8")
     const parsed = JSON.parse(raw) as unknown
     return sanitizeRegistry(parsed)
   } catch {
@@ -114,4 +114,30 @@ export function saveEntry(ref: string, sourceUrl: string, options?: { remoteBase
 export function getAllEntries(): [string, ImportEntry][] {
   const registry = readRegistry()
   return Object.entries(registry.importedSkills)
+}
+
+export function deleteEntries(refs: readonly string[]): { removed: string[]; missing: string[] } {
+  const normalizedRefs = [...new Set(refs.map((ref) => normalizeRef(ref)).filter(Boolean))]
+  if (normalizedRefs.length === 0) {
+    return { removed: [], missing: [] }
+  }
+
+  const registry = readRegistry()
+  const removed: string[] = []
+  const missing: string[] = []
+
+  for (const ref of normalizedRefs) {
+    if (registry.importedSkills[ref]) {
+      delete registry.importedSkills[ref]
+      removed.push(ref)
+    } else {
+      missing.push(ref)
+    }
+  }
+
+  if (removed.length > 0) {
+    writeRegistry(registry)
+  }
+
+  return { removed, missing }
 }

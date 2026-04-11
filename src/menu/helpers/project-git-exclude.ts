@@ -1,6 +1,7 @@
 import path from "path"
 import * as clack from "@clack/prompts"
-import fs from "fs-extra"
+import { readFile, mkdir, writeFile } from "node:fs/promises"
+import { exists } from "../../core/fs-utils.ts"
 import {
   appendGitExcludeRules,
   computeMissingGitExcludeRules,
@@ -28,8 +29,8 @@ export async function maybeUpdateProjectGitExclude(projectDir: string, ides: Ide
   if (clack.isCancel(action) || action !== "exclude-now") return
 
   try {
-    const current = (await fs.pathExists(gitExcludePath))
-      ? await fs.readFile(gitExcludePath, "utf-8")
+    const current = (await exists(gitExcludePath))
+      ? await readFile(gitExcludePath, "utf-8")
       : ""
     const missingRules = computeMissingGitExcludeRules(current, desiredRules)
 
@@ -61,7 +62,8 @@ export async function maybeUpdateProjectGitExclude(projectDir: string, ides: Ide
     }
 
     const next = appendGitExcludeRules(current, missingRules)
-    await fs.outputFile(gitExcludePath, next, "utf-8")
+    await mkdir(path.dirname(gitExcludePath), { recursive: true })
+    await writeFile(gitExcludePath, next, "utf-8")
     log.success(`Git exclusion rules updated: ${missingRules.length} added.`)
   } catch (err) {
     log.warn(`Could not update git local excludes: ${err instanceof Error ? err.message : String(err)}`)

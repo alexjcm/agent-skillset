@@ -1,7 +1,7 @@
 import path from "path"
 import os from "os"
-import fs from "fs-extra"
-import { z } from "zod"
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs"
+import { existsSync } from "./fs-utils.ts"
 
 // ============================================================================
 // CONSTANTS — always fixed, never configurable
@@ -19,12 +19,33 @@ function getConfigPath(): string {
 // SCHEMA
 // ============================================================================
 
-const UserConfigSchema = z.object({
-  ownSkillsDir: z.string().optional(),
-  excludedSkills: z.array(z.string()).default([]),
-})
+export interface UserConfig {
+  ownSkillsDir?: string
+  excludedSkills: string[]
+}
 
-export type UserConfig = z.infer<typeof UserConfigSchema>
+function parseUserConfig(raw: unknown): UserConfig {
+  const defaultConfig: UserConfig = { excludedSkills: [] }
+
+  if (typeof raw !== "object" || raw === null || Array.isArray(raw)) {
+    return defaultConfig
+  }
+
+  const obj = raw as Record<string, unknown>
+  const result: UserConfig = { excludedSkills: [] }
+
+  if (typeof obj.ownSkillsDir === "string") {
+    result.ownSkillsDir = obj.ownSkillsDir
+  }
+
+  if (Array.isArray(obj.excludedSkills)) {
+    result.excludedSkills = obj.excludedSkills.filter(
+      (item): item is string => typeof item === "string"
+    )
+  }
+
+  return result
+}
 
 // ============================================================================
 // READ
@@ -37,10 +58,9 @@ export type UserConfig = z.infer<typeof UserConfigSchema>
  */
 export function readUserConfig(): UserConfig | null {
   try {
-    const raw = fs.readFileSync(getConfigPath(), "utf8")
-    const parsed = UserConfigSchema.safeParse(JSON.parse(raw) as unknown)
-    if (!parsed.success) return { excludedSkills: [] }
-    return parsed.data
+    const raw = readFileSync(getConfigPath(), "utf8")
+    const parsed = JSON.parse(raw)
+    return parseUserConfig(parsed)
   } catch (err) {
     if ((err as NodeJS.ErrnoException).code === "ENOENT") return null
     return { excludedSkills: [] }
@@ -53,7 +73,7 @@ export function readUserConfig(): UserConfig | null {
 
 /** Returns true when the config file already exists on disk. */
 export function hasUserConfig(): boolean {
-  return fs.pathExistsSync(getConfigPath())
+  return existsSync(getConfigPath())
 }
 
 // ============================================================================
@@ -63,6 +83,6 @@ export function hasUserConfig(): boolean {
 /** Persists the config to the config file (creates dir if needed). */
 export function saveUserConfig(config: UserConfig): void {
   const cfgPath = getConfigPath()
-  fs.ensureDirSync(path.dirname(cfgPath))
-  fs.writeFileSync(cfgPath, JSON.stringify(config, null, 2) + "\n", "utf8")
+  mkdirSync(path.dirname(cfgPath), { recursive: true })
+  writeFileSync(cfgPath, JSON.stringify(config, null, 2) + "\n", "utf8")
 }

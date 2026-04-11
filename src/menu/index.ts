@@ -2,13 +2,14 @@ import * as clack from "@clack/prompts"
 import * as pc from "../ui/ansi.ts"
 import { getSkillSourceDir } from "../core/config.ts"
 import { loadExcludedRefs } from "../core/skills-config.ts"
-import { deployAllGlobalUnifiedFlow, deploySpecificGlobalFlow } from "./flows/deploy-global.flow.ts"
+import { deployGlobalFlow } from "./flows/deploy-global.flow.ts"
 import { deployToProjectFlow } from "./flows/deploy-project.flow.ts"
 import { doctorFlow } from "./flows/doctor.flow.ts"
 import { listFlow } from "./flows/list.flow.ts"
 import { configFlow } from "./flows/config.flow.ts"
 import { importSkillFlow } from "./flows/import-skill.flow.ts"
 import { checkUpdatesFlow } from "./flows/check-updates.flow.ts"
+import { deleteFlow } from "./flows/delete.flow.ts"
 import { EXIT_CODES } from "../core/exit-codes.ts"
 import type { FlowResult } from "./flow-result.ts"
 import { log } from "../ui/logger.ts"
@@ -40,8 +41,8 @@ export async function runMenu(): Promise<number> {
     | "settings"
     | "list"
     | "deploy-project"
-    | "deploy-specific"
-    | "deploy-all-global"
+    | "deploy-global"
+    | "delete"
     | "doctor"
     | undefined
 
@@ -54,9 +55,9 @@ export async function runMenu(): Promise<number> {
         { value: "check-updates",      label: "Check & update imported skills",           hint: "→ imported skills" },
         { value: "settings",           label: "Own Skills Dir",                           hint: "→ set own skills path" },
         { value: "list",               label: "List available skills" },
-        { value: "deploy-project",     label: "Deploy to project/workspace directory",    hint: "→ project/workspace" },
-        { value: "deploy-specific",    label: "Deploy specific skill",                    hint: "→ one skill (global)" },
-        { value: "deploy-all-global",  label: "Deploy ALL skills",                        hint: "→ all skills (global)" },
+        { value: "deploy-project",     label: "Deploy skills to project/workspace",       hint: "→ project/workspace" },
+        { value: "deploy-global",      label: "Deploy skills globally",                   hint: "→ one or more skills (global)" },
+        { value: "delete",             label: "Delete skill(s)",                          hint: "→ imported or global" },
         { value: "doctor",             label: "Doctor (diagnostics)" },
       ],
     })
@@ -72,11 +73,8 @@ export async function runMenu(): Promise<number> {
     let result: FlowResult = FLOW_COMPLETED
 
     switch (action) {
-      case "deploy-all-global":
-        result = await deployAllGlobalUnifiedFlow(excludedRefs)
-        break
-      case "deploy-specific":
-        result = await deploySpecificGlobalFlow()
+      case "deploy-global":
+        result = await deployGlobalFlow(excludedRefs)
         break
       case "deploy-project":
         result = await deployToProjectFlow(excludedRefs)
@@ -96,6 +94,9 @@ export async function runMenu(): Promise<number> {
         break
       case "check-updates":
         result = await checkUpdatesFlow()
+        break
+      case "delete":
+        result = await deleteFlow()
         break
     }
 

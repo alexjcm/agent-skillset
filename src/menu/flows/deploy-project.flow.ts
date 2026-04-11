@@ -2,7 +2,7 @@ import path from "path"
 import * as clack from "@clack/prompts"
 import * as pc from "../../ui/ansi.ts"
 
-import fs from "fs-extra"
+import { exists } from "../../core/fs-utils.ts"
 import { ALL_IDE_KEYS } from "../../core/config.ts"
 import { deploySkillToProject } from "../../core/deploy.ts"
 import type { IdeTarget, DeployResult, Skill } from "../../core/types.ts"
@@ -24,8 +24,8 @@ import { FLOW_ALL, FLOW_BACK, FLOW_CANCEL, FLOW_CANCELLED, FLOW_COMPLETED, FLOW_
 export async function deployToProjectFlow(excludedRefs: string[]): Promise<FlowResult> {
   type Step = "path" | "ide" | "scope" | typeof FLOW_CONFIRM
 
-  const isGitRepo = await fs.pathExists(path.join(process.cwd(), ".git"))
-  const isNpmProject = await fs.pathExists(path.join(process.cwd(), "package.json"))
+  const isGitRepo = await exists(path.join(process.cwd(), ".git"))
+  const isNpmProject = await exists(path.join(process.cwd(), "package.json"))
 
   let step: Step = "path"
   let projectDir: string | null = null
@@ -55,7 +55,7 @@ export async function deployToProjectFlow(excludedRefs: string[]): Promise<FlowR
       if (normalized.toLowerCase() === FLOW_BACK) return FLOW_BACK
 
       const resolved = path.resolve(normalized || process.cwd())
-      if (!(await fs.pathExists(resolved))) {
+      if (!(await exists(resolved))) {
         log.error(`Directory does not exist: ${resolved}`)
         continue
       }

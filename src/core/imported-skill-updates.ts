@@ -1,11 +1,12 @@
 import path from "path"
 import fg from "fast-glob"
-import fs from "fs-extra"
+import { readFile, rm, mkdir, writeFile } from "node:fs/promises"
 import type { SkillCandidate, SkillCandidatePreview } from "./github-fetcher.ts"
 import { fetchSkillCandidatePreviewsFromInput, hydrateSkillCandidate } from "./github-fetcher.ts"
 import { assertSafePathSegment, resolvePathInside } from "./path-safety.ts"
 import { saveEntry, type ImportEntry } from "./skill-imports.ts"
 import { IMPORTED_DIR } from "./user-config.ts"
+import { exists } from "./fs-utils.ts"
 
 export type CheckStatus = "up-to-date" | "update-available" | "unreachable"
 
@@ -73,7 +74,7 @@ function selectCandidateForRef(ref: string, entry: ImportEntry, candidates: Skil
 }
 
 async function listLocalFiles(localDir: string): Promise<string[]> {
-  if (!(await fs.pathExists(localDir))) return []
+  if (!(await exists(localDir))) return []
   const files = await fg("**/*", {
     cwd: localDir,
     onlyFiles: true,
@@ -125,7 +126,7 @@ async function compareLocalVsRemote(
   const remoteBuffers = await fetchRemoteBuffers(candidate)
   for (const rel of remoteFiles) {
     const localPath = resolvePathInside(localDir, rel, `Remote file path "${rel}"`)
-    const localBuffer = await fs.readFile(localPath)
+    const localBuffer = await readFile(localPath)
     const remoteBuffer = remoteBuffers.get(rel)
     if (!remoteBuffer || !remoteBuffer.equals(localBuffer)) {
       return { upToDate: false, remoteBuffers }
@@ -173,13 +174,13 @@ export async function syncImportedSkillFromReport(report: CheckReport): Promise<
   }
 
   const destination = localSkillPathFromRef(report.ref)
-  await fs.remove(destination)
-  await fs.ensureDir(destination)
+  await rm(destination, { recursive: true, force: true })
+  await mkdir(destination, { recursive: true })
 
   for (const [remotePath, content] of report.remoteBuffers.entries()) {
     const targetPath = resolvePathInside(destination, remotePath, `Remote file path "${remotePath}"`)
-    await fs.ensureDir(path.dirname(targetPath))
-    await fs.writeFile(targetPath, content)
+    await mkdir(path.dirname(targetPath), { recursive: true })
+    await writeFile(targetPath, content)
   }
 
   saveEntry(report.ref, report.candidate.canonicalUrl, { remoteBasePath: report.candidate.remoteBasePath })

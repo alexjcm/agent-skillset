@@ -1,6 +1,7 @@
 import path from "path"
 import fg from "fast-glob"
-import fs from "fs-extra"
+import { readdir, readFile } from "node:fs/promises"
+import { exists, existsSync } from "./fs-utils.ts"
 import { getSkillSourceDir } from "./config.ts"
 import { IMPORTED_DIR } from "./user-config.ts"
 import type { Skill } from "./types.ts"
@@ -15,19 +16,19 @@ export async function discoverCategories(): Promise<string[]> {
   const roots: string[] = []
   const ownDir = getSkillSourceDir()
   if (ownDir) roots.push(ownDir)
-  if (await fs.pathExists(IMPORTED_DIR)) roots.push(IMPORTED_DIR)
+  if (await exists(IMPORTED_DIR)) roots.push(IMPORTED_DIR)
 
   const allCategories = new Set<string>()
   for (const root of roots) {
     try {
-      const entries = await fs.readdir(root, { withFileTypes: true })
+      const entries = await readdir(root, { withFileTypes: true })
       entries
         .filter((e) => e.isDirectory() && !e.name.startsWith("."))
         .forEach((e) => {
           // Only treat as a category if it does NOT directly contain SKILL.md
           // (i.e. it is not itself an uncategorized skill folder)
           const possibleSkillMd = path.join(root, e.name, "SKILL.md")
-          if (!fs.pathExistsSync(possibleSkillMd)) {
+          if (!existsSync(possibleSkillMd)) {
             allCategories.add(e.name)
           }
         })
@@ -46,7 +47,7 @@ export async function discoverCategories(): Promise<string[]> {
 
 async function parseSkillDescription(skillMdPath: string): Promise<string | undefined> {
   try {
-    const content = await fs.readFile(skillMdPath, "utf8")
+    const content = await readFile(skillMdPath, "utf8")
     const lines = content.split("\n")
 
     let i = 0
@@ -90,7 +91,7 @@ async function discoverSkillsInRoot(
   root: string,
   source: "own" | "imported"
 ): Promise<Skill[]> {
-  if (!(await fs.pathExists(root))) return []
+  if (!(await exists(root))) return []
 
   const globRoot = root.replace(/\\/g, "/")
 
@@ -120,7 +121,7 @@ async function discoverSkillsInRoot(
       const ref = name
       uncategorizedDirs.add(path.normalize(skillDir))
       const description = await parseSkillDescription(mdPath)
-      skills.push({ ref, name, category: "", path: skillDir, description, source })
+      skills.push({ ref, name, category: "", path: skillDir, ...(description ? { description } : {}), source })
     } else {
       // Categorized (depth 2): root/category/skill-name/SKILL.md
       // Skip if the category dir itself was already claimed as an uncategorized skill
@@ -131,7 +132,7 @@ async function discoverSkillsInRoot(
       const category = path.basename(categoryDir)
       const ref = path.join(category, name)
       const description = await parseSkillDescription(mdPath)
-      skills.push({ ref, name, category, path: skillDir, description, source })
+      skills.push({ ref, name, category, path: skillDir, ...(description ? { description } : {}), source })
     }
   }
 

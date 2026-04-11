@@ -1,4 +1,3 @@
-import { z } from "zod"
 import { EXIT_CODES } from "./core/exit-codes.ts"
 import { log } from "./ui/logger.ts"
 import os from "os"
@@ -18,19 +17,13 @@ function resolveHomeDir(): string {
   return fromOs ?? ""
 }
 
-// Validate resolved runtime environment once at entry point.
-const EnvSchema = z.object({
-  HOME: z.string().min(1, "Could not resolve a home directory from environment"),
-})
+const resolvedHome = resolveHomeDir()
 
-const parsed = EnvSchema.safeParse({
-  HOME: resolveHomeDir(),
-})
-
-if (!parsed.success) {
-  const messages = parsed.error.issues.map((i) => `  • ${i.message}`).join("\n")
-  log.error(`Environment validation failed:\n${messages}`)
+if (!resolvedHome) {
+  log.error("Environment validation failed:\n  • Could not resolve a home directory from environment")
   process.exit(EXIT_CODES.ERROR)
 }
 
-export const env = parsed.data
+export const env = {
+  HOME: resolvedHome
+}

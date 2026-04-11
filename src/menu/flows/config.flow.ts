@@ -1,11 +1,12 @@
 import path from "path"
 import os from "os"
 import * as clack from "@clack/prompts"
-import fs from "fs-extra"
+import { mkdir } from "node:fs/promises"
 import * as pc from "../../ui/ansi.ts"
 import { readUserConfig, saveUserConfig, SKILLS_HOME } from "../../core/user-config.ts"
 import { discoverSkills } from "../../core/skills.ts"
 import { log } from "../../ui/logger.ts"
+import { exists } from "../../core/fs-utils.ts"
 import type { FlowResult } from "../flow-result.ts"
 import { FLOW_BACK, FLOW_CANCELLED, FLOW_COMPLETED } from "../constants/flow-tokens.ts"
 
@@ -58,7 +59,7 @@ export async function configFlow(): Promise<FlowResult> {
   const newPath = (typeof input === "string" ? input : "").trim()
 
   // Check if it exists; if not, offer to create it
-  if (!(await fs.pathExists(newPath))) {
+  if (!(await exists(newPath))) {
     const create = await clack.confirm({
       message: `"${newPath}" does not exist. Create it?`,
       initialValue: true,
@@ -67,7 +68,7 @@ export async function configFlow(): Promise<FlowResult> {
       log.warn("Folder not created. Setting was not saved.")
       return FLOW_CANCELLED
     }
-    await fs.ensureDir(newPath)
+    await mkdir(newPath, { recursive: true })
     log.success(`Created ${newPath}`)
   }
 

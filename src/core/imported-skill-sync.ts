@@ -1,5 +1,5 @@
 import path from "path"
-import fs from "fs-extra"
+import { rm, mkdir, writeFile } from "node:fs/promises"
 import type { SkillCandidate, SkillCandidatePreview } from "./github-fetcher.ts"
 import { assertSafePathSegment, resolvePathInside } from "./path-safety.ts"
 import { IMPORTED_DIR } from "./user-config.ts"
@@ -70,13 +70,13 @@ function normalizeRemoteRelativePath(remotePath: string): string {
 export async function downloadAndSyncImportedSkill(candidate: SkillCandidate, category: string | null): Promise<number> {
   const destination = buildImportedDestinationPath(candidate.name, category)
 
-  await fs.remove(destination)
-  await fs.ensureDir(destination)
+  await rm(destination, { recursive: true, force: true })
+  await mkdir(destination, { recursive: true })
 
   const downloads = candidate.files.map(async (file) => {
     const relative = normalizeRemoteRelativePath(file.remotePath)
     const targetPath = resolvePathInside(destination, relative, `Remote file path "${file.remotePath}"`)
-    await fs.ensureDir(path.dirname(targetPath))
+    await mkdir(path.dirname(targetPath), { recursive: true })
 
     const response = await fetch(file.downloadUrl)
     if (!response.ok) {
@@ -84,7 +84,7 @@ export async function downloadAndSyncImportedSkill(candidate: SkillCandidate, ca
     }
 
     const content = Buffer.from(await response.arrayBuffer())
-    await fs.writeFile(targetPath, content)
+    await writeFile(targetPath, content)
   })
 
   await Promise.all(downloads)

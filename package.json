@@ -1,6 +1,6 @@
 {
   "name": "skillctrl",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "CLI to manage and deploy AI agent skills",
   "license": "MIT",
   "type": "module",
@@ -17,7 +17,7 @@
   },
   "types": "dist/index.d.ts",
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "publishConfig": {
     "access": "public"
@@ -29,10 +29,10 @@
     "LICENSE*"
   ],
   "scripts": {
-    "start": "bun run src/index.ts",
-    "dev": "bun --watch run src/index.ts",
-    "build": "tsup src/index.ts --format esm --target node20 --clean --minify --dts",
-    "lint": "bun run --bun tsc --noEmit",
+    "start": "tsx src/index.ts",
+    "dev": "tsx watch src/index.ts",
+    "build": "tsup src/index.ts --format esm --target node22 --clean --minify --dts",
+    "lint": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
     "prepublishOnly": "npm run lint && npm test && npm run build"
@@ -46,20 +46,16 @@
     "developer-tools",
     "codex",
     "claude-code",
-    "cursor",
-    "windsurf"
+    "cursor"
   ],
   "dependencies": {
     "@clack/prompts": "1.2.0",
     "commander": "14.0.3",
-    "fast-glob": "3.3.3",
-    "fs-extra": "11.3.4",
-    "zod": "4.3.6"
+    "fast-glob": "3.3.3"
   },
   "devDependencies": {
-    "@types/bun": "^1.3.10",
-    "@types/fs-extra": "^11.0.4",
     "@types/node": "^22.0.0",
+    "tsx": "^4.20.6",
     "tsup": "^8.5.1",
     "typescript": "^5.9.0",
     "vitest": "^4.1.0"

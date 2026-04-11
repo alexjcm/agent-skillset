@@ -2,7 +2,6 @@
 
 Helps you import, update, and deploy AI agent skills.
 
-![Bun](https://img.shields.io/badge/bun-%23000000.svg?style=for-the-badge&logo=bun&logoColor=white)
 ![Node.js](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
@@ -33,32 +32,19 @@ To expand your local toolkit:
 The CLI manages and deploys skills to your local environment.
 
 ### Runtime model
-- **Bun**: development only — use for local runs, tests, and lint inside this repo.
-- **Node.js + npm**: use for distribution and running `skillctrl` globally. If you just want to use the CLI, skip Bun entirely.
+- **Node.js + npm**: required for development, distribution, and global usage.
 
-Recommended Node.js version for distribution/runtime: **20+**.
+Required Node.js version: **22+**.
 
-### 1. Go to project root
-```bash
-cd skillctrl
-```
-
-### 2. Install & Link
-**Using Bun:**
-```bash
-bun install
-bun link
-```
-
-**Using Node/NPM:**
+### 1. Install & Link
 ```bash
 npm install
 npm link
 ```
 
-> For distribution/runtime, prefer Node/NPM linking (`npm link`), then run `skillctrl` from any directory.
+> Use `npm link` to run `skillctrl` from any directory.
 
-### 3. After publishing to npm (public registry)
+### 2. After publishing to npm (public registry)
 ```bash
 npm install -g skillctrl
 skillctrl
@@ -81,16 +67,20 @@ The easiest way to manage your skills is via the guided wizard:
 skillctrl
 
 # Or local development run
-bun start
+npm start
 ```
 
 This TUI handles IDE targeting, project/workspace path resolution, and automatic Git exclusion handling. It also includes a **Doctor (diagnostics)** option to validate your environment.
+
+Key deploy/delete entries in the current menu:
+- **Deploy skills to project/workspace**: deploy one or more skills into a specific project directory.
+- **Deploy skills globally**: choose IDE target(s), then deploy **all** skills or **selected** skill(s).
+- **Delete skill(s)**: opens a submenu for imported/global deletion flows.
 
 ### ❓ Command Help
 
 ```bash
 skillctrl --help
-skillctrl --version
 ```
 
 ### 🔁 If you moved your local skills folder
@@ -112,6 +102,13 @@ From the interactive menu:
   - select specific skills to update (recommended),
   - update all available,
   - cancel.
+- **Delete skill(s)** opens the deletion submenu:
+  - **Delete imported skill(s)**: remove one, many, or all imported skills. This deletes both:
+    - imported local files under `~/.skillctrl/imported/`,
+    - matching entries in `~/.skillctrl/skill-imports.json`.
+  - **Delete globally installed skill(s)**: remove one, many, or all known skills from selected IDE global paths.
+    - selection is based on deployed folder names (collision-aware),
+    - only known catalog skills are included.
 
 Imported skills are stored outside this repo:
 - `~/.skillctrl/imported/{category}/{skill}/`

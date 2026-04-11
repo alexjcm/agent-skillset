@@ -1,6 +1,6 @@
-import os from "os"
+import { tmpdir } from "node:os"
 import path from "path"
-import * as fs from "fs-extra"
+import { mkdtemp, mkdir, writeFile, rm } from "node:fs/promises"
 import { describe, expect, it } from "vitest"
 import {
   appendGitExcludeRules,
@@ -10,7 +10,7 @@ import {
 } from "../src/core/project-git-exclude.ts"
 
 async function mkTmp(prefix: string): Promise<string> {
-  return fs.mkdtemp(path.join(os.tmpdir(), prefix))
+  return mkdtemp(path.join(tmpdir(), prefix))
 }
 
 describe("suggestGitExcludeRulesForIdes", () => {
@@ -41,17 +41,17 @@ describe("resolveProjectGitExcludePath", () => {
   it("returns null when project has no .git", async () => {
     const project = await mkTmp("skills-no-git-")
     await expect(resolveProjectGitExcludePath(project)).resolves.toBeNull()
-    await fs.remove(project)
+    await rm(project, { recursive: true, force: true })
   })
 
   it("resolves .git/info/exclude for standard repos", async () => {
     const project = await mkTmp("skills-git-dir-")
-    await fs.ensureDir(path.join(project, ".git"))
+    await mkdir(path.join(project, ".git"), { recursive: true })
 
     await expect(resolveProjectGitExcludePath(project)).resolves.toBe(
       path.join(project, ".git", "info", "exclude")
     )
-    await fs.remove(project)
+    await rm(project, { recursive: true, force: true })
   })
 
   it("resolves .git file pointers (worktree style)", async () => {
@@ -59,13 +59,13 @@ describe("resolveProjectGitExcludePath", () => {
     const project = path.join(root, "project")
     const gitMeta = path.join(root, "meta", "worktree-a")
 
-    await fs.ensureDir(project)
-    await fs.ensureDir(gitMeta)
-    await fs.writeFile(path.join(project, ".git"), "gitdir: ../meta/worktree-a\n", "utf8")
+    await mkdir(project, { recursive: true })
+    await mkdir(gitMeta, { recursive: true })
+    await writeFile(path.join(project, ".git"), "gitdir: ../meta/worktree-a\n", "utf8")
 
     await expect(resolveProjectGitExcludePath(project)).resolves.toBe(
       path.join(gitMeta, "info", "exclude")
     )
-    await fs.remove(root)
+    await rm(root, { recursive: true, force: true })
   })
 })
