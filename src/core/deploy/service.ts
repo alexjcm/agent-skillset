@@ -1,10 +1,10 @@
 import path from "path"
 import { cp, mkdir } from "node:fs/promises"
-import { IDE_GLOBAL_PATHS, IDE_PROJECT_PATHS, IDE_BASE_DIRS } from "./config.ts"
-import { exists } from "./fs-utils.ts"
-import { safeRm, safeRmProject } from "./safe-rm.ts"
-import { discoverSkills, isExcluded } from "./skills.ts"
-import type { IdeTarget, Skill, DeployOptions, DeployResult } from "./types.ts"
+import { IDE_GLOBAL_PATHS, IDE_PROJECT_PATHS, IDE_BASE_DIRS } from "../config/ide-paths.ts"
+import { exists } from "../system/fs.ts"
+import { safeRm, safeRmProject } from "../system/safe-rm.ts"
+import { discoverSkills, isExcluded } from "../skills/discovery.ts"
+import type { IdeTarget, Skill, DeployOptions, DeployResult } from "../types.ts"
 
 // ============================================================================
 // HELPERS

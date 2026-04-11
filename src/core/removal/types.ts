@@ -1,4 +1,4 @@
-import type { IdeTarget } from "./types.ts"
+import type { IdeTarget } from "../types.ts"
 
 export type RemovalScope = "imported" | "global"
 export type RemovalStatus = "deleted" | "skipped" | "error"

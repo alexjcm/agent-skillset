@@ -1,8 +1,8 @@
 import path from "path"
 import { rm, mkdir, writeFile } from "node:fs/promises"
-import type { SkillCandidate, SkillCandidatePreview } from "./github-fetcher.ts"
-import { assertSafePathSegment, resolvePathInside } from "./path-safety.ts"
-import { IMPORTED_DIR } from "./user-config.ts"
+import type { SkillCandidate, SkillCandidatePreview } from "./github/index.ts"
+import { assertSafePathSegment, resolvePathInside } from "../system/path-safety.ts"
+import { IMPORTED_DIR } from "../config/user-config.ts"
 
 export type ImportAction = "import-new" | "update-same-source" | "overwrite-source"
 

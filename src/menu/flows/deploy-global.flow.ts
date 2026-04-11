@@ -1,9 +1,9 @@
 import * as clack from "@clack/prompts"
 import * as pc from "../../ui/ansi.ts"
 
-import { ALL_IDE_KEYS } from "../../core/config.ts"
-import { deploySkillGlobal, deployAllGlobal } from "../../core/deploy.ts"
-import { discoverSkills } from "../../core/skills.ts"
+import { ALL_IDE_KEYS } from "../../core/config/ide-paths.ts"
+import { deploySkillGlobal, deployAllGlobal } from "../../core/deploy/service.ts"
+import { discoverSkills } from "../../core/skills/discovery.ts"
 import type { IdeTarget, Skill, DeployResult } from "../../core/types.ts"
 import type { FlowResult } from "../flow-result.ts"
 import { selectIdes } from "../prompts/select-ide.ts"

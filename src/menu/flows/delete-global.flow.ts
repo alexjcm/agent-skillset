@@ -1,12 +1,12 @@
 import * as clack from "@clack/prompts"
 import * as pc from "../../ui/ansi.ts"
-import { ALL_IDE_KEYS } from "../../core/config.ts"
+import { ALL_IDE_KEYS } from "../../core/config/ide-paths.ts"
 import {
   listKnownGlobalRemovalCandidates,
   removeKnownGlobalSkillsByDeployNames,
-} from "../../core/global-skill-removal.ts"
+} from "../../core/removal/global.ts"
 import type { IdeTarget } from "../../core/types.ts"
-import type { RemovalResult } from "../../core/removal-types.ts"
+import type { RemovalResult } from "../../core/removal/types.ts"
 import type { FlowResult } from "../flow-result.ts"
 import { log } from "../../ui/logger.ts"
 import { promptMultiselectWithBack } from "../helpers/prompt-multiselect-with-back.ts"

@@ -1,10 +1,10 @@
-import { assertSafePathSegment, resolvePathInside } from "./path-safety.ts"
-import { deleteEntries, getAllEntries } from "./skill-imports.ts"
-import { discoverSkills } from "./skills.ts"
-import { exists } from "./fs-utils.ts"
-import { safeRmImported } from "./safe-rm.ts"
-import { IMPORTED_DIR } from "./user-config.ts"
-import type { RemovalResult } from "./removal-types.ts"
+import { assertSafePathSegment, resolvePathInside } from "../system/path-safety.ts"
+import { deleteEntries, getAllEntries } from "./registry.ts"
+import { discoverSkills } from "../skills/discovery.ts"
+import { exists } from "../system/fs.ts"
+import { safeRmImported } from "../system/safe-rm.ts"
+import { IMPORTED_DIR } from "../config/user-config.ts"
+import type { RemovalResult } from "../removal/types.ts"
 
 function normalizeRef(ref: string): string {
   return ref.replace(/\\/g, "/").replace(/^\/+/, "").replace(/\/+$/, "").trim()

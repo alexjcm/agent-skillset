@@ -1,9 +1,9 @@
 import path from "path"
 import { lstat } from "node:fs/promises"
 import { readFileSync } from "node:fs"
-import { exists } from "./fs-utils.ts"
-import { IDE_PROJECT_PATHS } from "./config.ts"
-import type { IdeTarget } from "./types.ts"
+import { exists } from "../system/fs.ts"
+import { IDE_PROJECT_PATHS } from "../config/ide-paths.ts"
+import type { IdeTarget } from "../types.ts"
 
 function normalizeRule(rule: string): string {
   const trimmed = rule.trim().replace(/\\/g, "/")

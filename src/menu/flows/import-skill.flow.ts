@@ -5,7 +5,7 @@ import {
   hydrateSkillCandidate,
   type SkillCandidate,
   type SkillCandidatePreview,
-} from "../../core/github-fetcher.ts"
+} from "../../core/imports/github/index.ts"
 import {
   buildImportedDestinationPath,
   createInitialImportPlans,
@@ -15,10 +15,10 @@ import {
   type ImportAction,
   type ImportPlan,
   type PreparedImport,
-} from "../../core/imported-skill-sync.ts"
-import { validateSkillContent } from "../../core/quick-skill-validator.ts"
-import { discoverCategories, discoverSkills } from "../../core/skills.ts"
-import { getEntry, saveEntry } from "../../core/skill-imports.ts"
+} from "../../core/imports/sync.ts"
+import { validateSkillContent } from "../../core/skills/validator.ts"
+import { discoverCategories, discoverSkills } from "../../core/skills/discovery.ts"
+import { getEntry, saveEntry } from "../../core/imports/registry.ts"
 import type { FlowResult } from "../flow-result.ts"
 import { log } from "../../ui/logger.ts"
 import { promptMultiselectWithBack } from "../helpers/prompt-multiselect-with-back.ts"

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { groupSkillsForGlobalRemoval } from "../src/core/global-removal-planning.ts"
+import { groupSkillsForGlobalRemoval } from "../src/core/removal/global-planning.ts"
 import type { Skill } from "../src/core/types.ts"
 
 function mkSkill(ref: string, name: string, source: "own" | "imported"): Skill {

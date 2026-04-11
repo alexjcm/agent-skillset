@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest"
-import { parseGitHubUrl } from "../src/core/github-url.ts"
+import { parseGitHubUrl } from "../src/core/imports/github/url.ts"
 
 describe("parseGitHubUrl", () => {
   it("parses owner/repo shorthand as repo-level", () => {

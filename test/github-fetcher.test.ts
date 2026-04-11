@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest"
-import { fetchSkillCandidatePreviewsFromInput } from "../src/core/github-fetcher.ts"
+import { fetchSkillCandidatePreviewsFromInput } from "../src/core/imports/github/index.ts"
 
 function jsonResponse(data: unknown, status = 200, headers?: Record<string, string>): Response {
   return new Response(JSON.stringify(data), {

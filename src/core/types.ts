@@ -1,4 +1,4 @@
-import { ALL_IDE_KEYS } from "./config.ts"
+import { ALL_IDE_KEYS } from "./config/ide-paths.ts"
 
 // ============================================================================
 // IDE TARGET — only real IDE names, never "all" (CLI plan design decision)

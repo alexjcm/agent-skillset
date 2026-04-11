@@ -1,7 +1,7 @@
 import path from "path"
 import os from "os"
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs"
-import { existsSync } from "./fs-utils.ts"
+import { existsSync } from "../system/fs.ts"
 
 // ============================================================================
 // CONSTANTS — always fixed, never configurable

@@ -1,13 +1,13 @@
 import path from "path"
 import * as clack from "@clack/prompts"
 import { readFile, mkdir, writeFile } from "node:fs/promises"
-import { exists } from "../../core/fs-utils.ts"
+import { exists } from "../../core/system/fs.ts"
 import {
   appendGitExcludeRules,
   computeMissingGitExcludeRules,
   resolveProjectGitExcludePath,
   suggestGitExcludeRulesForIdes,
-} from "../../core/project-git-exclude.ts"
+} from "../../core/deploy/git-exclude.ts"
 import type { IdeTarget } from "../../core/types.ts"
 import { log } from "../../ui/logger.ts"
 

@@ -2,18 +2,18 @@ import { tmpdir } from "node:os"
 import path from "path"
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest"
 import { mkdir, rm, symlink, writeFile } from "node:fs/promises"
-import { exists } from "../src/core/fs-utils.ts"
+import { exists } from "../src/core/system/fs.ts"
 
 const hoisted = vi.hoisted(() => ({
   importedRoot: "/tmp/skillctrl-imported-safe-rm-root",
 }))
 const IMPORTED_ROOT = hoisted.importedRoot
 
-vi.mock("../src/core/user-config.ts", () => ({
+vi.mock("../src/core/config/user-config.ts", () => ({
   IMPORTED_DIR: hoisted.importedRoot,
 }))
 
-import { safeRmImported } from "../src/core/safe-rm.ts"
+import { safeRmImported } from "../src/core/system/safe-rm.ts"
 
 async function resetRoot(): Promise<void> {
   await rm(IMPORTED_ROOT, { recursive: true, force: true })

@@ -3,8 +3,8 @@ import {
   buildUpdateReport,
   syncImportedSkillFromReport,
   type CheckReport,
-} from "../../core/imported-skill-updates.ts"
-import { getAllEntries } from "../../core/skill-imports.ts"
+} from "../../core/imports/updates.ts"
+import { getAllEntries } from "../../core/imports/registry.ts"
 import type { FlowResult } from "../flow-result.ts"
 import { log } from "../../ui/logger.ts"
 import { promptMultiselectWithBack } from "../helpers/prompt-multiselect-with-back.ts"

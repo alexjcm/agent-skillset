@@ -1,6 +1,6 @@
 import path from "path"
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs"
-import { SKILLS_HOME } from "./user-config.ts"
+import { SKILLS_HOME } from "../config/user-config.ts"
 
 export interface ImportEntry {
   source: string

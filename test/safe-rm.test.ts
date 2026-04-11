@@ -1,9 +1,9 @@
 import { tmpdir } from "node:os"
 import path from "path"
 import { mkdtemp, mkdir, writeFile, symlink, realpath } from "node:fs/promises"
-import { exists } from "../src/core/fs-utils.ts"
+import { exists } from "../src/core/system/fs.ts"
 import { describe, it, expect } from "vitest"
-import { safeRm, safeRmProject } from "../src/core/safe-rm.ts"
+import { safeRm, safeRmProject } from "../src/core/system/safe-rm.ts"
 
 async function mkTmp(prefix: string): Promise<string> {
   return mkdtemp(path.join(tmpdir(), prefix))

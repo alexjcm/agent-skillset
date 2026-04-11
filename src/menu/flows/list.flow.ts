@@ -1,4 +1,4 @@
-import { discoverSkills, discoverCategories } from "../../core/skills.ts"
+import { discoverSkills, discoverCategories } from "../../core/skills/discovery.ts"
 import { log } from "../../ui/logger.ts"
 import * as pc from "../../ui/ansi.ts"
 

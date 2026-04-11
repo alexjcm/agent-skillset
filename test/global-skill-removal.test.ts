@@ -7,19 +7,19 @@ const mocks = vi.hoisted(() => ({
   safeRm: vi.fn<(targetPath: string, allowedPrefixes: readonly string[]) => Promise<void>>(),
 }))
 
-vi.mock("../src/core/skills.ts", () => ({
+vi.mock("../src/core/skills/discovery.ts", () => ({
   discoverSkills: mocks.discoverSkills,
 }))
 
-vi.mock("../src/core/fs-utils.ts", () => ({
+vi.mock("../src/core/system/fs.ts", () => ({
   exists: mocks.exists,
 }))
 
-vi.mock("../src/core/safe-rm.ts", () => ({
+vi.mock("../src/core/system/safe-rm.ts", () => ({
   safeRm: mocks.safeRm,
 }))
 
-vi.mock("../src/core/config.ts", () => ({
+vi.mock("../src/core/config/ide-paths.ts", () => ({
   IDE_GLOBAL_PATHS: {
     claude: ["/targets/claude/skills"],
     cursor: ["/targets/cursor/skills", "/targets/agents/skills"],
@@ -33,7 +33,7 @@ vi.mock("../src/core/config.ts", () => ({
 import {
   listKnownGlobalRemovalCandidates,
   removeKnownGlobalSkillsByDeployNames,
-} from "../src/core/global-skill-removal.ts"
+} from "../src/core/removal/global.ts"
 
 function mkSkill(ref: string, name: string, source: "own" | "imported"): Skill {
   const parts = ref.split("/")

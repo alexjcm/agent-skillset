@@ -1,6 +1,6 @@
 import * as clack from "@clack/prompts"
 import * as pc from "../../ui/ansi.ts"
-import { discoverSkills } from "../../core/skills.ts"
+import { discoverSkills } from "../../core/skills/discovery.ts"
 import type { Skill } from "../../core/types.ts"
 import { promptMultiselectWithBack } from "../helpers/prompt-multiselect-with-back.ts"
 import { FLOW_BACK } from "../constants/flow-tokens.ts"

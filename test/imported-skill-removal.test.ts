@@ -10,31 +10,31 @@ const mocks = vi.hoisted(() => {
   }
 })
 
-vi.mock("../src/core/user-config.ts", () => ({
+vi.mock("../src/core/config/user-config.ts", () => ({
   IMPORTED_DIR: "/tmp/imported-root",
 }))
 
-vi.mock("../src/core/fs-utils.ts", () => ({
+vi.mock("../src/core/system/fs.ts", () => ({
   exists: mocks.exists,
 }))
 
-vi.mock("../src/core/safe-rm.ts", () => ({
+vi.mock("../src/core/system/safe-rm.ts", () => ({
   safeRmImported: mocks.safeRmImported,
 }))
 
-vi.mock("../src/core/skill-imports.ts", () => ({
+vi.mock("../src/core/imports/registry.ts", () => ({
   getAllEntries: mocks.getAllEntries,
   deleteEntries: mocks.deleteEntries,
 }))
 
-vi.mock("../src/core/skills.ts", () => ({
+vi.mock("../src/core/skills/discovery.ts", () => ({
   discoverSkills: mocks.discoverSkills,
 }))
 
 import {
   listKnownImportedRefs,
   removeImportedSkills,
-} from "../src/core/imported-skill-removal.ts"
+} from "../src/core/imports/removal.ts"
 
 describe("imported skill removal core", () => {
   beforeEach(() => {

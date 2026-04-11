@@ -1,4 +1,4 @@
-import type { Skill } from "./types.ts"
+import type { Skill } from "../types.ts"
 
 export interface KnownInstalledSkillGroup {
   deployName: string

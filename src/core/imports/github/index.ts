@@ -1,5 +1,5 @@
 import path from "path"
-import { parseGitHubUrl, type GitHubRef } from "../github-url.ts"
+import { parseGitHubUrl, type GitHubRef } from "./url.ts"
 import {
   MAX_CONCURRENT_REQUESTS,
   MSG_INVALID_URL,

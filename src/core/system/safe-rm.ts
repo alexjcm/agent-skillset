@@ -1,8 +1,8 @@
 import path from "path"
 import os from "os"
 import { lstat, realpath, rm } from "node:fs/promises"
-import { exists } from "./fs-utils.ts"
-import { IMPORTED_DIR } from "./user-config.ts"
+import { exists } from "./fs.ts"
+import { IMPORTED_DIR } from "../config/user-config.ts"
 
 // ============================================================================
 // SAFE RM — global IDE paths

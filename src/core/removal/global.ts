@@ -1,11 +1,11 @@
 import path from "path"
-import { IDE_BASE_DIRS, IDE_GLOBAL_PATHS } from "./config.ts"
-import { safeRm } from "./safe-rm.ts"
-import { discoverSkills } from "./skills.ts"
-import { exists } from "./fs-utils.ts"
-import { groupSkillsForGlobalRemoval, type KnownInstalledSkillGroup } from "./global-removal-planning.ts"
-import type { RemovalResult } from "./removal-types.ts"
-import type { IdeTarget } from "./types.ts"
+import { IDE_BASE_DIRS, IDE_GLOBAL_PATHS } from "../config/ide-paths.ts"
+import { safeRm } from "../system/safe-rm.ts"
+import { discoverSkills } from "../skills/discovery.ts"
+import { exists } from "../system/fs.ts"
+import { groupSkillsForGlobalRemoval, type KnownInstalledSkillGroup } from "./global-planning.ts"
+import type { RemovalResult } from "./types.ts"
+import type { IdeTarget } from "../types.ts"
 
 function uniqueSorted(values: readonly string[]): string[] {
   return [...new Set(values.map((value) => value.trim()).filter(Boolean))]

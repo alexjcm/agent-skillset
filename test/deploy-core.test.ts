@@ -1,9 +1,9 @@
 import { tmpdir } from "node:os"
 import path from "path"
 import { mkdtemp, mkdir, writeFile } from "node:fs/promises"
-import { exists } from "../src/core/fs-utils.ts"
+import { exists } from "../src/core/system/fs.ts"
 import { describe, it, expect } from "vitest"
-import { deploySkillToProject } from "../src/core/deploy.ts"
+import { deploySkillToProject } from "../src/core/deploy/service.ts"
 import type { Skill } from "../src/core/types.ts"
 
 async function mkTmp(prefix: string): Promise<string> {

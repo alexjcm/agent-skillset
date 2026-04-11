@@ -11,8 +11,25 @@ Helps you import, update, and deploy AI agent skills.
 ### 🚀 Highlights
 - **Multiple IDE Support**: Deploy skills to IntelliJ (Codeium), Windsurf, Antigravity, Claude Code, Cursor, and Codex.
 - **TUI-Driven Interface**: Interactive terminal wizard for seamless management.
-- **GitHub Import & Update**: Import skills from GitHub URLs or `owner/repo`, then check/update later from registry.
+- **GitHub Import & Update**: Import skills from GitHub URLs or `owner/repo`, then check/update later from GitHub upstream using local import metadata.
 - **User Config**: Register your custom skills repository by setting `ownSkillsDir` in `~/.skillctrl/config.json`.
+
+---
+
+## ⚙️ Install (Users)
+
+Required Node.js version: **22+**.
+
+### 1. Install from npm (recommended)
+```bash
+npm i -g skillctrl
+skillctrl
+```
+
+### 2. Run without global install
+```bash
+npx skillctrl@latest
+```
 
 ---
 
@@ -27,32 +44,16 @@ To expand your local toolkit:
 
 ---
 
-## ⚙️ CLI Setup & Installation
+## 👩‍💻 Development Setup
 
 The CLI manages and deploys skills to your local environment.
-
-### Runtime model
-- **Node.js + npm**: required for development, distribution, and global usage.
-
-Required Node.js version: **22+**.
-
-### 1. Install & Link
+### 1. Install dependencies, build, and link locally
 ```bash
 npm install
+npm run build
+# If you previously used a local linked dev build:
+npm unlink -g skillctrl
 npm link
-```
-
-> Use `npm link` to run `skillctrl` from any directory.
-
-### 2. After publishing to npm (public registry)
-```bash
-npm install -g skillctrl
-skillctrl
-```
-
-Or run without global install:
-```bash
-npx skillctrl@latest
 ```
 
 ---
@@ -69,13 +70,6 @@ skillctrl
 # Or local development run
 npm start
 ```
-
-This TUI handles IDE targeting, project/workspace path resolution, and automatic Git exclusion handling. It also includes a **Doctor (diagnostics)** option to validate your environment.
-
-Key deploy/delete entries in the current menu:
-- **Deploy skills to project/workspace**: deploy one or more skills into a specific project directory.
-- **Deploy skills globally**: choose IDE target(s), then deploy **all** skills or **selected** skill(s).
-- **Delete skill(s)**: opens a submenu for imported/global deletion flows.
 
 ### ❓ Command Help
 
@@ -98,17 +92,12 @@ skillctrl
 
 From the interactive menu:
 - **Import skill from GitHub**: accepts full GitHub URLs (`https://github.com/owner/repo`), short format (`github.com/owner/repo`), or owner/repo shorthand (`owner/repo`).
-- **Check & update imported skills**: checks imported skills from `~/.skillctrl/skill-imports.json` and lets you:
-  - select specific skills to update (recommended),
-  - update all available,
-  - cancel.
+- **Check & update imported skills**: checks imported skills listed in `~/.skillctrl/skill-imports.json` against their GitHub source.
 - **Delete skill(s)** opens the deletion submenu:
   - **Delete imported skill(s)**: remove one, many, or all imported skills. This deletes both:
     - imported local files under `~/.skillctrl/imported/`,
     - matching entries in `~/.skillctrl/skill-imports.json`.
   - **Delete globally installed skill(s)**: remove one, many, or all known skills from selected IDE global paths.
-    - selection is based on deployed folder names (collision-aware),
-    - only known catalog skills are included.
 
 Imported skills are stored outside this repo:
 - `~/.skillctrl/imported/{category}/{skill}/`
@@ -122,16 +111,7 @@ export GITHUB_TOKEN="your_token"
 
 ## 🧩 IDE Compatibility Paths
 
-| IDE | Global Path | Project/Workspace Path |
-|-----|-------------|-------------------------|
-| **Antigravity** | `~/.gemini/antigravity/skills/` | `.agents/skills/` |
-| **Windsurf** | `~/.codeium/windsurf/skills/` | `.windsurf/skills/` |
-| **IntelliJ (Codeium)** | `~/.codeium/skills/` | `.windsurf/skills/` |
-| **Junie (JetBrains)** | `~/.junie/skills/` | `.junie/skills/` |
-| **Claude Code** | `~/.claude/skills/` | `.claude/skills/` |
-| **Cursor** | `~/.cursor/skills/` | `.cursor/skills/` + `.agents/skills/` |
-| **Codex** | `~/.agents/skills/` | `.agents/skills/` |
-| **OpenCode** | `~/.config/opencode/skills/` + `~/.claude/skills/` + `~/.agents/skills/` | `.opencode/skills/` + `.claude/skills/` + `.agents/skills/` |
+See [IDE_COMPATIBILITY.md](./IDE_COMPATIBILITY.md).
 
 ---
 

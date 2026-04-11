@@ -7,7 +7,7 @@ import {
   computeMissingGitExcludeRules,
   resolveProjectGitExcludePath,
   suggestGitExcludeRulesForIdes,
-} from "../src/core/project-git-exclude.ts"
+} from "../src/core/deploy/git-exclude.ts"
 
 async function mkTmp(prefix: string): Promise<string> {
   return mkdtemp(path.join(tmpdir(), prefix))

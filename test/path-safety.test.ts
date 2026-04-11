@@ -1,6 +1,6 @@
 import path from "path"
 import { describe, expect, it } from "vitest"
-import { assertSafePathSegment, resolvePathInside } from "../src/core/path-safety.ts"
+import { assertSafePathSegment, resolvePathInside } from "../src/core/system/path-safety.ts"
 
 describe("assertSafePathSegment", () => {
   it("accepts a normal path segment", () => {

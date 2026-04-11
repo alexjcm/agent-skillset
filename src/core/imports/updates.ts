@@ -1,12 +1,12 @@
 import path from "path"
 import fg from "fast-glob"
 import { readFile, rm, mkdir, writeFile } from "node:fs/promises"
-import type { SkillCandidate, SkillCandidatePreview } from "./github-fetcher.ts"
-import { fetchSkillCandidatePreviewsFromInput, hydrateSkillCandidate } from "./github-fetcher.ts"
-import { assertSafePathSegment, resolvePathInside } from "./path-safety.ts"
-import { saveEntry, type ImportEntry } from "./skill-imports.ts"
-import { IMPORTED_DIR } from "./user-config.ts"
-import { exists } from "./fs-utils.ts"
+import type { SkillCandidate, SkillCandidatePreview } from "./github/index.ts"
+import { fetchSkillCandidatePreviewsFromInput, hydrateSkillCandidate } from "./github/index.ts"
+import { assertSafePathSegment, resolvePathInside } from "../system/path-safety.ts"
+import { saveEntry, type ImportEntry } from "./registry.ts"
+import { IMPORTED_DIR } from "../config/user-config.ts"
+import { exists } from "../system/fs.ts"
 
 export type CheckStatus = "up-to-date" | "update-available" | "unreachable"
 

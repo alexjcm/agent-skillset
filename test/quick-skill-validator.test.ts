@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest"
-import { validateSkillContent } from "../src/core/quick-skill-validator.ts"
+import { validateSkillContent } from "../src/core/skills/validator.ts"
 
 describe("validateSkillContent", () => {
   it("accepts valid minimal frontmatter", () => {

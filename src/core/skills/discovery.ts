@@ -1,10 +1,10 @@
 import path from "path"
 import fg from "fast-glob"
 import { readdir, readFile } from "node:fs/promises"
-import { exists, existsSync } from "./fs-utils.ts"
-import { getSkillSourceDir } from "./config.ts"
-import { IMPORTED_DIR } from "./user-config.ts"
-import type { Skill } from "./types.ts"
+import { exists, existsSync } from "../system/fs.ts"
+import { getSkillSourceDir } from "../config/ide-paths.ts"
+import { IMPORTED_DIR } from "../config/user-config.ts"
+import type { Skill } from "../types.ts"
 
 // ============================================================================
 // DISCOVER CATEGORIES

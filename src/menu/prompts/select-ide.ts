@@ -1,6 +1,6 @@
 import * as clack from "@clack/prompts"
 import * as pc from "../../ui/ansi.ts"
-import { ALL_IDE_KEYS } from "../../core/config.ts"
+import { ALL_IDE_KEYS } from "../../core/config/ide-paths.ts"
 import type { IdeTarget } from "../../core/types.ts"
 import { promptMultiselectWithBack } from "../helpers/prompt-multiselect-with-back.ts"
 import { FLOW_ALL, FLOW_BACK } from "../constants/flow-tokens.ts"
